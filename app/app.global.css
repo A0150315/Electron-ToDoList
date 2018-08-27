@@ -1,0 +1,48 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+
+@import '~@fortawesome/fontawesome-free/css/all.css';
+* {
+  font-family: -apple-system, BlinkMacSystemFont, '微软雅黑', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+  /* -webkit-app-region: drag; */
+  position: relative;
+  color: #fff;
+  height: 100vh;
+  /* background: linear-gradient( to bottom, rgba(242, 212, 13, 1) 0%, rgba(242, 212, 13, 1) 68%, rgba(247, 226, 86, 1) 100%); */
+  font-family: Arial, Helvetica, Helvetica Neue, serif;
+  overflow-y: hidden;
+}
+
+h2 {
+  margin: 0;
+  font-size: 2.25rem;
+  font-weight: bold;
+  letter-spacing: -0.025em;
+  color: #fff;
+}
+
+p {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  color: white;
+  opacity: 0.75;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
