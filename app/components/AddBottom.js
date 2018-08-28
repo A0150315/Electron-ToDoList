@@ -8,7 +8,7 @@ export default class AddBottom extends Component<Props> {
   props: Props;
   render() {
     return (
-      <p className={styles.outerContainer} >
+      <p className={styles.outerContainer} onClick={this.props.addItem}>
           +
       </p>
     );

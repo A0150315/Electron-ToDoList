@@ -1,11 +1,17 @@
+.container{
+  /* overflow: auto; */
+}
+
 .container p {
   -webkit-app-region: drag;
   user-select: none;
-  padding-left:10px;
+  padding-left:18px;
 }
 
 .title{
   font-size: 14px;
+  margin:0;
+  padding:14px;
 }
 
 .container h2 {
@@ -31,4 +37,30 @@
 
 .mainText{
   font-size: .9em;
+}
+
+.mainList{
+  padding:0 8px;
+  margin:0;
+  height:calc(400px - 47px);
+  overflow: auto;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #FEE5E8;
+  height: 50px;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar:hover {
+  opacity: .1;
+}
+
+::-webkit-scrollbar-track-piece {
+  background-color: rgba(254, 229, 232, 0.13);;
+  border-radius: 5px;
 }
