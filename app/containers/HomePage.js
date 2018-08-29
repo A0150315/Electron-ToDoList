@@ -35,26 +35,42 @@ export default class HomePage extends Component < Props > {
     })
   }
 
-  handleInputChange = (event) => {
+  handleTextAreaChange = (event) => {
     const editingItemIndex = this.state.editingItemIndex
     const list = [...this.state.list];
-    console.log(list)
     list[editingItemIndex].main=event.target.value
     this.setState({
       list
     })
   }
 
-  shouldComponentUpdate(nextProps, nextState){
-    // if(this.state.editingItemIndex !== -1)return false;
-    return true
+  handleInputChange = (event) => {
+    const editingItemIndex = this.state.editingItemIndex
+    const list = [...this.state.list];
+    list[editingItemIndex].link=event.target.value
+    this.setState({
+      list
+    })
   }
 
+  componentWillMount(){
+    document.addEventListener('click',()=>{
+      
+      
+    },false)
+  }
+  
   render() {
-    console.log(1);
-    
-    return <div>
-              <Home list={this.state.list} handleInputChange={this.handleInputChange}/>
+    return <div onClick={(event)=>{
+                this.setState({
+                  editingItemIndex:-1
+                }) 
+              }}>
+              <Home 
+                list={this.state.list} 
+                handleInputChange={this.handleInputChange} 
+                handleTextAreaChange={this.handleTextAreaChange}
+                editingItemIndex={this.state.editingItemIndex}/>
               <AddBottom addItem={this.addItem}/>
             </div>
   }

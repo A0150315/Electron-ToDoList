@@ -74,7 +74,7 @@ app.on('ready', async () => {
 
   mainWindow = new BrowserWindow({
     title: "略略略",
-    show: false,
+    show: true,
     width: 250,
     height: 400,
     center: true,
