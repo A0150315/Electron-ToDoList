@@ -1,5 +1,7 @@
 // @flow
 import React, { Component } from 'react';
+import { shell } from 'electron';
+
 import styles from './Home.css';
 
 type Props = {};
@@ -7,46 +9,52 @@ type Props = {};
 export default class Home extends Component<Props> {
   props: Props;
 
+  openBrowser = linkString => {
+    shell.openExternal(linkString);
+    return true;
+  };
+
   render() {
+    const { props } = this;
     return (
       <div className={styles.container}>
-        <p  className={styles.title}>陈小怡的待办事项</p>
+        <p className={styles.title}>陈小怡的待办事项</p>
         <ul className={styles.mainList}>
-          {this.props.editingItemIndex}
-          {
-            this.props.list.map((e,i)=>{
-              return (
-                <li key={i} className={styles.mainBlock}>
-                  <i className={styles.order}>
-                    {i+1}
-                  </i>
-                  {this.props.editingItemIndex===i}
-                  {
-                    this.props.editingItemIndex===i?(
-                      <div className={styles.mainText}>
-                        <textarea 
-                          type="text" 
-                          value={e.main} 
-                          onChange={this.props.handleTextAreaChange} 
-                          onClick={proxy => proxy.stopPropagation()}/>
-                        <input 
-                          type="text"  
-                          value={e.link}  
-                          onChange={this.props.handleInputChange}
-                          onClick={proxy => proxy.stopPropagation()}/>
-                        {e.img}
-                      </div>):(
-                      <div className={styles.mainText}>
-                        {e.main}
-                        {e.link}
-                        {e.img}
-                      </div>)
-                  }
-                  
-                </li>
-              )
-            })
-          }
+          {props.editingItemIndex}
+          {props.list.map((e, i) => (
+            <li key={e.key} className={styles.mainBlock}>
+              <i className={styles.order}>{i + 1}</i>
+              {props.editingItemIndex === i ? (
+                <div className={styles.mainText}>
+                  <textarea
+                    type="text"
+                    value={e.main}
+                    onChange={props.handleTextAreaChange}
+                    onClick={proxy => proxy.stopPropagation()}
+                  />
+                  <input
+                    type="text"
+                    value={e.link}
+                    onChange={props.handleInputChange}
+                    onClick={proxy => proxy.stopPropagation()}
+                  />
+                  {e.img}
+                </div>
+              ) : (
+                <div className={styles.mainText}>
+                  <div>{e.main}</div>
+                  <a
+                    href="javascript:void(0)"
+                    onClick={() => this.openBrowser(e.link)}
+                    rel="noreferrer noopener"
+                  >
+                    {e.link}
+                  </a>
+                  <div>{e.img}</div>
+                </div>
+              )}
+            </li>
+          ))}
         </ul>
       </div>
     );
