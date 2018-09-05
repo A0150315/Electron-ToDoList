@@ -42,6 +42,7 @@
     "promise/always-return": "error",
     "promise/catch-or-return": "error",
     "promise/no-native": "off",
+    "no-script-url": "off",
     "react/sort-comp": [
       "error",
       {
@@ -57,7 +58,9 @@
     "react/jsx-no-bind": "off",
     "react/jsx-filename-extension": [
       "error",
-      { "extensions": [".js", ".jsx"] }
+      {
+        "extensions": [".js", ".jsx"]
+      }
     ],
     "react/prefer-stateless-function": "off"
   },
