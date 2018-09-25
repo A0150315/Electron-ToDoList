@@ -10,19 +10,17 @@
  *
  * @flow
  */
-import {
-  app,
-  BrowserWindow,
-  Tray,
-  Menu,
-  nativeImage
-} from 'electron';
-const path = require('path');
+import { app, BrowserWindow, Tray, Menu, nativeImage } from 'electron';
+import path from 'path';
 import MenuBuilder from './menu';
 
-let mainWindow = null,
-  tray = null;
-const trayIconNative = nativeImage.createFromPath(path.join(__dirname, './ico.ico'));
+// const sqlite3 = require('sqlite3').verbose();
+
+let mainWindow = null;
+let tray = null;
+const trayIconNative = nativeImage.createFromPath(
+  path.join(__dirname, './ico.ico')
+);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -34,7 +32,7 @@ if (
   process.env.DEBUG_PROD === 'true'
 ) {
   require('electron-debug')();
-  const path = require('path');
+  // const path = require('path');
   const p = path.join(__dirname, '..', 'app', 'node_modules');
   require('module').globalPaths.push(p);
 }
@@ -62,7 +60,6 @@ app.on('window-all-closed', () => {
 });
 
 app.on('ready', async () => {
-
   console.log(app.getPath('userData')); // 用于存储 app 用户数据目录
 
   if (
@@ -73,7 +70,7 @@ app.on('ready', async () => {
   }
 
   mainWindow = new BrowserWindow({
-    title: "略略略",
+    title: '略略略',
     show: true,
     width: 250,
     height: 400,
@@ -84,8 +81,8 @@ app.on('ready', async () => {
     alwaysOnTop: true,
     skipTaskbar: true,
     icon: path.join(__dirname, '/ico.ico'),
-    maximizable:false,
-    minimizable:false,
+    maximizable: false,
+    minimizable: false
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
@@ -98,15 +95,19 @@ app.on('ready', async () => {
     }
     mainWindow.show();
     mainWindow.focus();
-    // 初始化 Tray 
+    // 初始化 Tray
     tray = new Tray(trayIconNative);
     tray.setToolTip('Chan List');
-    tray.setContextMenu(Menu.buildFromTemplate([{
-      label: '退出',
-      click: function () {
-        app.quit()
-      }
-    }]))
+    tray.setContextMenu(
+      Menu.buildFromTemplate([
+        {
+          label: '退出',
+          click: () => {
+            app.quit();
+          }
+        }
+      ])
+    );
     // -----------------------------
   });
 
