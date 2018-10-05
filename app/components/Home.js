@@ -10,7 +10,8 @@ type Props = {};
 export default class Home extends Component<Props> {
   props: Props;
 
-  openBrowser = linkString => {
+  openBrowser = (linkString, proxy) => {
+    proxy.stopPropagation();
     shell.openExternal(linkString);
     return true;
   };
@@ -51,7 +52,7 @@ export default class Home extends Component<Props> {
                   <div>{e.main}</div>
                   <a
                     href="javascript:void(0)"
-                    onClick={() => this.openBrowser(e.link)}
+                    onClick={proxy => this.openBrowser(e.link, proxy)}
                     rel="noreferrer noopener"
                   >
                     {e.link}
