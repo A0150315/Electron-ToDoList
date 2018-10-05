@@ -23,6 +23,13 @@ export default class HomePage extends Component<Props> {
   }
 
   addItem = () => {
+    const { state } = this;
+    if (
+      state.editingItemIndex !== -1 &&
+      !state.list[state.editingItemIndex].main
+    ) {
+      return false;
+    }
     this.setState(prevState => ({
       editingItemIndex: prevState.list.length,
       list: prevState.list.concat({
@@ -32,6 +39,11 @@ export default class HomePage extends Component<Props> {
         key: btoa(prevState.list.length + new Date().getTime())
       })
     }));
+  };
+
+  editItem = (index, event) => {
+    event.stopPropagation();
+    this.setState({ editingItemIndex: index });
   };
 
   handleTextAreaChange = event => {
@@ -55,9 +67,20 @@ export default class HomePage extends Component<Props> {
   };
 
   returnDefault = () => {
-    this.setState({
-      editingItemIndex: -1
-    });
+    const { state } = this;
+    if (
+      state.editingItemIndex !== -1 &&
+      !state.list[state.editingItemIndex].main
+    ) {
+      this.setState(prevState => ({
+        editingItemIndex: -1,
+        list: prevState.list.slice(0, prevState.list.length - 1)
+      }));
+    } else {
+      this.setState({
+        editingItemIndex: -1
+      });
+    }
   };
 
   render() {
@@ -71,6 +94,7 @@ export default class HomePage extends Component<Props> {
         <Home
           list={state.list}
           handleInputChange={this.handleInputChange}
+          editItem={this.editItem}
           handleTextAreaChange={this.handleTextAreaChange}
           editingItemIndex={state.editingItemIndex}
         />

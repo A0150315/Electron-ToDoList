@@ -23,7 +23,12 @@ export default class Home extends Component<Props> {
         <ul className={styles.mainList}>
           {props.editingItemIndex}
           {props.list.map((e, i) => (
-            <li key={e.key} className={styles.mainBlock}>
+            <li
+              key={e.key}
+              className={styles.mainBlock}
+              onClick={proxy => props.editItem(i, proxy)}
+              role="presentation"
+            >
               <i className={styles.order}>{i + 1}</i>
               {props.editingItemIndex === i ? (
                 <div className={styles.mainText}>
