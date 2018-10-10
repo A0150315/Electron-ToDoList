@@ -32,7 +32,16 @@
 }
 
 .mainText {
+  word-wrap: break-word;
   font-size: 0.9em;
+  padding-right: 23px;
+}
+
+.mainText > textarea {
+  width: 100%;
+  resize: none;
+  outline: none;
+  height: 100%;
 }
 
 .mainList {
@@ -60,4 +69,19 @@
 ::-webkit-scrollbar-track-piece {
   background-color: rgba(254, 229, 232, 0.13);
   border-radius: 5px;
+}
+
+.deleteIcon {
+  width: 11.5px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  opacity: 0.3;
+  cursor: pointer;
+}
+
+.deleteIcon:hover {
+  opacity: 1;
 }

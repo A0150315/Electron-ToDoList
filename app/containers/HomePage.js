@@ -22,6 +22,14 @@ export default class HomePage extends Component<Props> {
     };
   }
 
+  componentWillMount() {
+    const list = window.localStorage.getItem('userData');
+    if (list)
+      this.setState({
+        list: JSON.parse(list)
+      });
+  }
+
   addItem = () => {
     const { state } = this;
     if (
@@ -43,10 +51,31 @@ export default class HomePage extends Component<Props> {
 
   editItem = (index, event) => {
     event.stopPropagation();
-    this.setState({ editingItemIndex: index });
+    this.returnDefault(index);
+  };
+
+  deleteItem = (index, event) => {
+    event.stopPropagation();
+    this.setState(
+      prevState => ({
+        editingItemIndex: -1,
+        list: [
+          ...prevState.list.slice(0, index),
+          ...prevState.list.slice(index + 1, prevState.list.length)
+        ]
+      }),
+      () => {
+        const { state } = this;
+        window.localStorage.setItem('userData', JSON.stringify(state.list));
+      }
+    );
+    // this.returnDefault(index);
   };
 
   handleTextAreaChange = event => {
+    console.log(event.target.style);
+    console.log(event.target.scrollHeight);
+    // event.target.style.heigth = event.target.scrollHeight + 'px';
     const { state } = this;
     const { editingItemIndex } = state;
     const list = [...state.list];
@@ -66,19 +95,31 @@ export default class HomePage extends Component<Props> {
     });
   };
 
-  returnDefault = () => {
+  handleDateTimeChange = event => {
+    const { state } = this;
+    const { editingItemIndex } = state;
+    const list = [...state.list];
+    list[editingItemIndex].time = event.target.value;
+    this.setState({
+      list
+    });
+    console.log(list);
+  };
+
+  returnDefault = (index = -1) => {
+    console.log(12);
     const { state } = this;
     if (
       state.editingItemIndex !== -1 &&
       !state.list[state.editingItemIndex].main
     ) {
       this.setState(prevState => ({
-        editingItemIndex: -1,
+        editingItemIndex: index,
         list: prevState.list.slice(0, prevState.list.length - 1)
       }));
     } else {
-      this.setState({
-        editingItemIndex: -1
+      this.setState({ editingItemIndex: index }, () => {
+        window.localStorage.setItem('userData', JSON.stringify(state.list));
       });
     }
   };
@@ -87,16 +128,19 @@ export default class HomePage extends Component<Props> {
     const { state } = this;
     return (
       <div
-        onClick={this.returnDefault}
+        onClick={() => this.returnDefault()}
         role="presentation"
         style={{ width: '100%' }}
       >
         <Home
           list={state.list}
           handleInputChange={this.handleInputChange}
+          handleDateTimeChange={this.handleDateTimeChange}
           editItem={this.editItem}
           handleTextAreaChange={this.handleTextAreaChange}
+          deleteItem={this.deleteItem}
           editingItemIndex={state.editingItemIndex}
+          returnDefault={this.returnDefault}
         />
         <AddBottom addItem={this.addItem} />
       </div>

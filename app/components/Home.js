@@ -22,7 +22,7 @@ export default class Home extends Component<Props> {
       <div className={styles.container}>
         <p className={styles.title}>陈小怡的待办事项</p>
         <ul className={styles.mainList}>
-          {props.editingItemIndex}
+          {/* {props.editingItemIndex} */}
           {props.list.map((e, i) => (
             <li
               key={e.key}
@@ -38,11 +38,31 @@ export default class Home extends Component<Props> {
                     value={e.main}
                     onChange={props.handleTextAreaChange}
                     onClick={proxy => proxy.stopPropagation()}
+                    onKeyDown={$event => {
+                      if ($event.which === 13) {
+                        props.returnDefault();
+                        $event.stopPropagation();
+                        $event.preventDefault();
+                      }
+                    }}
                   />
                   <input
                     type="text"
                     value={e.link}
                     onChange={props.handleInputChange}
+                    onClick={proxy => proxy.stopPropagation()}
+                    onKeyDown={$event => {
+                      if ($event.which === 13) {
+                        props.returnDefault();
+                        $event.stopPropagation();
+                        $event.preventDefault();
+                      }
+                    }}
+                  />
+                  <input
+                    value={e.time}
+                    onChange={props.handleDateTimeChange}
+                    type="datetime-local"
                     onClick={proxy => proxy.stopPropagation()}
                   />
                   {e.img}
@@ -57,7 +77,15 @@ export default class Home extends Component<Props> {
                   >
                     {e.link}
                   </a>
+                  {e.time}
                   <div>{e.img}</div>
+                  <img
+                    src="../resources/删除@2x.png"
+                    alt="delete"
+                    className={styles.deleteIcon}
+                    onClick={proxy => props.deleteItem(i, proxy)}
+                    role="presentation"
+                  />
                 </div>
               )}
             </li>
