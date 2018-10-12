@@ -1,11 +1,12 @@
 // @flow
 
 import React, { Component } from 'react';
-import { shell } from 'electron';
+import { shell, ipcRenderer } from 'electron';
 
 import styles from './Home.css';
 
 type Props = {};
+ipcRenderer.send('add');
 
 export default class Home extends Component<Props> {
   props: Props;
@@ -22,7 +23,7 @@ export default class Home extends Component<Props> {
       <div className={styles.container}>
         <p className={styles.title}>陈小怡的待办事项</p>
         <ul className={styles.mainList}>
-          {/* {props.editingItemIndex} */}
+          {/* {props.editingItemIndex}   */}
           {props.list.map((e, i) => (
             <li
               key={e.key}
@@ -34,19 +35,16 @@ export default class Home extends Component<Props> {
               {props.editingItemIndex === i ? (
                 <div className={styles.mainText}>
                   <textarea
+                    placeholder="请输入您的待办事项"
+                    maxLength="100"
+                    className={styles.textarea}
                     type="text"
                     value={e.main}
                     onChange={props.handleTextAreaChange}
                     onClick={proxy => proxy.stopPropagation()}
-                    onKeyDown={$event => {
-                      if ($event.which === 13) {
-                        props.returnDefault();
-                        $event.stopPropagation();
-                        $event.preventDefault();
-                      }
-                    }}
                   />
                   <input
+                    placeholder="请输入正确的链接地址"
                     type="text"
                     value={e.link}
                     onChange={props.handleInputChange}
@@ -60,8 +58,14 @@ export default class Home extends Component<Props> {
                     }}
                   />
                   <input
-                    value={e.time}
-                    onChange={props.handleDateTimeChange}
+                    value={e.startTime}
+                    onChange={props.handleStartTimeChange}
+                    type="datetime-local"
+                    onClick={proxy => proxy.stopPropagation()}
+                  />
+                  <input
+                    value={e.deadline}
+                    onChange={props.handleDeadlineChange}
                     type="datetime-local"
                     onClick={proxy => proxy.stopPropagation()}
                   />
@@ -77,7 +81,18 @@ export default class Home extends Component<Props> {
                   >
                     {e.link}
                   </a>
-                  {e.time}
+                  <br />
+                  <br />
+                  <div>
+                    Start Time:
+                    <br />
+                    {e.startTime}
+                  </div>
+                  <div>
+                    Deadline:
+                    <br />
+                    {e.deadline}
+                  </div>
                   <div>{e.img}</div>
                   <img
                     src="../resources/删除@2x.png"

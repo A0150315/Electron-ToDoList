@@ -73,9 +73,6 @@ export default class HomePage extends Component<Props> {
   };
 
   handleTextAreaChange = event => {
-    console.log(event.target.style);
-    console.log(event.target.scrollHeight);
-    // event.target.style.heigth = event.target.scrollHeight + 'px';
     const { state } = this;
     const { editingItemIndex } = state;
     const list = [...state.list];
@@ -95,28 +92,66 @@ export default class HomePage extends Component<Props> {
     });
   };
 
-  handleDateTimeChange = event => {
+  handleStartTimeChange = event => {
     const { state } = this;
     const { editingItemIndex } = state;
     const list = [...state.list];
-    list[editingItemIndex].time = event.target.value;
+    list[editingItemIndex].startTime = event.target.value;
     this.setState({
       list
     });
-    console.log(list);
+  };
+
+  handleDeadlineChange = event => {
+    const { state } = this;
+    const { editingItemIndex } = state;
+    const list = [...state.list];
+    list[editingItemIndex].deadline = event.target.value;
+    this.setState({
+      list
+    });
   };
 
   returnDefault = (index = -1) => {
-    console.log(12);
     const { state } = this;
+    console.log('index:', index);
+    console.log('state.editingItemIndex:', state.editingItemIndex);
     if (
       state.editingItemIndex !== -1 &&
       !state.list[state.editingItemIndex].main
     ) {
-      this.setState(prevState => ({
-        editingItemIndex: index,
-        list: prevState.list.slice(0, prevState.list.length - 1)
-      }));
+      let newEditingItemIndex;
+      if (index >= state.editingItemIndex) {
+        newEditingItemIndex = index - 1;
+      } else {
+        newEditingItemIndex = index;
+      }
+      this.setState(
+        prevState => ({
+          editingItemIndex: newEditingItemIndex,
+          list: [
+            ...prevState.list.slice(0, prevState.editingItemIndex),
+            ...prevState.list.slice(
+              prevState.editingItemIndex + 1,
+              prevState.list.length
+            )
+          ]
+        }),
+        () => {
+          setTimeout(() => {
+            window.localStorage.setItem(
+              'userData',
+              JSON.stringify([
+                ...state.list.slice(0, state.editingItemIndex),
+                ...state.list.slice(
+                  state.editingItemIndex + 1,
+                  state.list.length
+                )
+              ])
+            );
+          }, 100);
+        }
+      );
     } else {
       this.setState({ editingItemIndex: index }, () => {
         window.localStorage.setItem('userData', JSON.stringify(state.list));
@@ -135,7 +170,8 @@ export default class HomePage extends Component<Props> {
         <Home
           list={state.list}
           handleInputChange={this.handleInputChange}
-          handleDateTimeChange={this.handleDateTimeChange}
+          handleStartTimeChange={this.handleStartTimeChange}
+          handleDeadlineChange={this.handleDeadlineChange}
           editItem={this.editItem}
           handleTextAreaChange={this.handleTextAreaChange}
           deleteItem={this.deleteItem}

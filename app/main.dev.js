@@ -10,7 +10,7 @@
  *
  * @flow
  */
-import { app, BrowserWindow, Tray, Menu, nativeImage } from 'electron';
+import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain } from 'electron';
 import path from 'path';
 import MenuBuilder from './menu';
 
@@ -117,4 +117,17 @@ app.on('ready', async () => {
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
+});
+
+ipcMain.on('add', () => {
+  let newwin = new BrowserWindow({
+    width: 600,
+    height: 400,
+    frame: true,
+    parent: mainWindow // win是主窗口
+  });
+  newwin.loadURL(`file://${__dirname}/test.html`); // new.html是新开窗口的渲染进程
+  newwin.on('closed', () => {
+    newwin = null;
+  });
 });
