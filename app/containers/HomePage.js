@@ -120,6 +120,8 @@ export default class HomePage extends Component<Props> {
       state.editingItemIndex !== -1 &&
       !state.list[state.editingItemIndex].main
     ) {
+      const isContinue: boolean = window.confirm('你确定不写点什么？');
+      if (!isContinue) return;
       let newEditingItemIndex;
       if (index >= state.editingItemIndex) {
         newEditingItemIndex = index - 1;

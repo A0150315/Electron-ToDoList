@@ -1,12 +1,12 @@
 // @flow
 
 import React, { Component } from 'react';
-import { shell, ipcRenderer } from 'electron';
+import { shell } from 'electron';
 
 import styles from './Home.css';
 
 type Props = {};
-ipcRenderer.send('add');
+// ipcRenderer.send('add');
 
 export default class Home extends Component<Props> {
   props: Props;
@@ -45,6 +45,7 @@ export default class Home extends Component<Props> {
                   />
                   <input
                     placeholder="请输入正确的链接地址"
+                    className={styles.input}
                     type="text"
                     value={e.link}
                     onChange={props.handleInputChange}
@@ -57,14 +58,15 @@ export default class Home extends Component<Props> {
                       }
                     }}
                   />
-                  <input
+                  {/* <input
                     value={e.startTime}
                     onChange={props.handleStartTimeChange}
                     type="datetime-local"
                     onClick={proxy => proxy.stopPropagation()}
-                  />
+                  /> */}
                   <input
                     value={e.deadline}
+                    className={styles.input}
                     onChange={props.handleDeadlineChange}
                     type="datetime-local"
                     onClick={proxy => proxy.stopPropagation()}
@@ -83,16 +85,18 @@ export default class Home extends Component<Props> {
                   </a>
                   <br />
                   <br />
-                  <div>
+                  {/* <div>
                     Start Time:
                     <br />
                     {e.startTime}
-                  </div>
-                  <div>
-                    Deadline:
-                    <br />
-                    {e.deadline}
-                  </div>
+                  </div> */}
+                  {e.deadline && (
+                    <div>
+                      Deadline:
+                      <br />
+                      {e.deadline}
+                    </div>
+                  )}
                   <div>{e.img}</div>
                   <img
                     src="../resources/删除@2x.png"

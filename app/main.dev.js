@@ -119,6 +119,7 @@ app.on('ready', async () => {
   menuBuilder.buildMenu();
 });
 
+// ipc主程序监听add事件创建新窗口
 ipcMain.on('add', () => {
   let newwin = new BrowserWindow({
     width: 600,
