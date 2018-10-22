@@ -55,18 +55,27 @@ export default class HomePage extends Component<Props> {
   };
 
   deleteItem = (index, event) => {
+    const { state } = this;
     event.stopPropagation();
+    let newEditingItemIndex = -1;
+    if (state.editingItemIndex !== -1) {
+      if (state.editingItemIndex > index) {
+        newEditingItemIndex = state.editingItemIndex - 1;
+      } else {
+        newEditingItemIndex = state.editingItemIndex;
+      }
+    }
     this.setState(
       prevState => ({
-        editingItemIndex: -1,
+        editingItemIndex: newEditingItemIndex,
         list: [
           ...prevState.list.slice(0, index),
           ...prevState.list.slice(index + 1, prevState.list.length)
         ]
       }),
       () => {
-        const { state } = this;
-        window.localStorage.setItem('userData', JSON.stringify(state.list));
+        const nextState = this.state;
+        window.localStorage.setItem('userData', JSON.stringify(nextState.list));
       }
     );
     // this.returnDefault(index);
