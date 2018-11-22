@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import Home from '../components/Home';
 import AddBottom from '../components/AddBottom';
+import Timer from '../utils/Timer';
 
 type Props = {};
 
@@ -18,19 +19,29 @@ export default class HomePage extends Component<Props> {
         //   img:''
         // }
       ],
-      editingItemIndex: -1
+      editingItemIndex: -1,
+      listTimer: null
     };
   }
 
   componentWillMount() {
-    const list = window.localStorage.getItem('userData');
-    if (list)
-      this.setState({
-        list: JSON.parse(list)
-      });
+    let list = window.localStorage.getItem('userData');
+    if (list) list = JSON.parse(list);
+    this.setState(
+      {
+        list,
+        listTimer: new Timer(list)
+      },
+      () => {
+        const { state } = this;
+        console.log(state.listTimer);
+        // 初始化定时器
+      }
+    );
   }
 
   addItem = () => {
+    // 添加一个空项目，并使其处于编辑状态
     const { state } = this;
     if (
       state.editingItemIndex !== -1 &&
@@ -50,11 +61,13 @@ export default class HomePage extends Component<Props> {
   };
 
   editItem = (index, event) => {
+    // 使一个项目处于编辑状态
     event.stopPropagation();
     this.returnDefault(index);
   };
 
   deleteItem = (index, event) => {
+    // 删除一个项目
     const { state } = this;
     event.stopPropagation();
     let newEditingItemIndex = -1;
@@ -78,54 +91,38 @@ export default class HomePage extends Component<Props> {
         window.localStorage.setItem('userData', JSON.stringify(nextState.list));
       }
     );
-    // this.returnDefault(index);
+  };
+
+  handleChange = (event, type) => {
+    // 处理输入框改变动作
+    const { state } = this;
+    const { editingItemIndex } = state;
+    const list = [...state.list];
+    list[editingItemIndex][type] = event.target.value;
+    this.setState({ list });
   };
 
   handleTextAreaChange = event => {
-    const { state } = this;
-    const { editingItemIndex } = state;
-    const list = [...state.list];
-    list[editingItemIndex].main = event.target.value;
-    this.setState({
-      list
-    });
+    this.handleChange(event, 'main');
   };
 
   handleInputChange = event => {
-    const { state } = this;
-    const { editingItemIndex } = state;
-    const list = [...state.list];
-    list[editingItemIndex].link = event.target.value;
-    this.setState({
-      list
-    });
+    this.handleChange(event, 'link');
   };
 
   handleStartTimeChange = event => {
-    const { state } = this;
-    const { editingItemIndex } = state;
-    const list = [...state.list];
-    list[editingItemIndex].startTime = event.target.value;
-    this.setState({
-      list
-    });
+    this.handleChange(event, 'startTime');
   };
 
   handleDeadlineChange = event => {
-    const { state } = this;
-    const { editingItemIndex } = state;
-    const list = [...state.list];
-    list[editingItemIndex].deadline = event.target.value;
-    this.setState({
-      list
-    });
+    this.handleChange(event, 'deadline');
   };
 
   returnDefault = (index = -1) => {
+    // 列表统一处理函数
     const { state } = this;
-    console.log('index:', index);
-    console.log('state.editingItemIndex:', state.editingItemIndex);
     if (
+      // textarea 无输入，删除
       state.editingItemIndex !== -1 &&
       !state.list[state.editingItemIndex].main
     ) {
@@ -137,35 +134,28 @@ export default class HomePage extends Component<Props> {
       } else {
         newEditingItemIndex = index;
       }
+      const newList = [
+        // 整理后的列表
+        ...state.list.slice(0, state.editingItemIndex),
+        ...state.list.slice(state.editingItemIndex + 1, state.list.length)
+      ];
       this.setState(
-        prevState => ({
+        {
           editingItemIndex: newEditingItemIndex,
-          list: [
-            ...prevState.list.slice(0, prevState.editingItemIndex),
-            ...prevState.list.slice(
-              prevState.editingItemIndex + 1,
-              prevState.list.length
-            )
-          ]
-        }),
+          list: newList
+        },
         () => {
-          setTimeout(() => {
-            window.localStorage.setItem(
-              'userData',
-              JSON.stringify([
-                ...state.list.slice(0, state.editingItemIndex),
-                ...state.list.slice(
-                  state.editingItemIndex + 1,
-                  state.list.length
-                )
-              ])
-            );
-          }, 100);
+          // 设置本地缓存
+          window.localStorage.setItem('userData', JSON.stringify(newList));
+          // 删除 editingItemIndex 项目的定时器
         }
       );
     } else {
       this.setState({ editingItemIndex: index }, () => {
-        window.localStorage.setItem('userData', JSON.stringify(state.list));
+        // 每次点击后更新本地列表
+        if (state.editingItemIndex !== index && state.editingItemIndex !== -1)
+          window.localStorage.setItem('userData', JSON.stringify(state.list));
+        // 重置 editingItemIndex 项目的定时器
       });
     }
   };
