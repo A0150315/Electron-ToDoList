@@ -5,6 +5,8 @@ import { shell } from 'electron';
 
 import styles from './Home.css';
 
+import deleteIcon from '../img/deleteIcon.png'; // 垃圾桶图标
+
 type Props = {};
 // ipcRenderer.send('add');
 
@@ -99,7 +101,7 @@ export default class Home extends Component<Props> {
                   )}
                   <div>{e.img}</div>
                   <img
-                    src="../resources/删除@2x.png"
+                    src={deleteIcon}
                     alt="delete"
                     className={styles.deleteIcon}
                     onClick={proxy => props.deleteItem(i, proxy)}
