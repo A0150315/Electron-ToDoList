@@ -104,7 +104,7 @@ export default class Home extends Component<Props> {
                     src={deleteIcon}
                     alt="delete"
                     className={styles.deleteIcon}
-                    onClick={proxy => props.deleteItem(i, proxy)}
+                    onClick={proxy => props.deleteItem(i, e.key, proxy)}
                     role="presentation"
                   />
                 </div>

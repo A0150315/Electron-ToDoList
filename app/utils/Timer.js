@@ -1,12 +1,8 @@
 export default class Timer {
-  constructor(list) {
+  constructor(list = []) {
     this.cacheList = list;
     this.initTimer();
-    return this.list;
-  }
-
-  test() {
-    this.list();
+    return this;
   }
 
   initTimer() {
@@ -15,32 +11,69 @@ export default class Timer {
     });
   }
 
-  startTimer(key, time) {
-    const leftTime = time.getTime() - new Date();
+  deleteTimer(key) {
+    window.clearTimeout(this[key]);
+    console.log(`已清除${key}的定时器`);
+  }
+
+  updateTimer(key) {
+    this.deleteTimer(key);
+    const cacheListLength = this.cacheList.length;
+    let i = 0;
+    for (; i < cacheListLength; i += 1) {
+      if (this.cacheList[i].key === key) break;
+    }
+    const target = this.cacheList[i];
+    if (target.deadline) this.startTimer(key, new Date(target.deadline), i);
+  }
+
+  async startTimer(key, deadlineTime, index) {
+    const leftTime = deadlineTime.getTime() - new Date();
+    if (leftTime <= 0) {
+      alert(`第${index + 1}条已过期`);
+      return false;
+    }
     const leftTimeLength = leftTime.toString().length;
     const leftTimeArray = leftTime
       .toString()
       .split('')
       .map((e, i) => 10 ** (leftTimeLength - i - 1) * e);
-    this.timeoutFunction(key, leftTimeLength, leftTimeArray);
+    const { status } = await this.timeoutFunction(
+      key,
+      leftTimeLength,
+      leftTimeArray
+    );
+    if (status) alert(`第${index + 1}条时间到啦`);
   }
 
-  timeoutFunction(key, length, arrayList, pivot = 0) {
-    console.log(3);
+  // 大数也适用的setTimeout
+  timeoutFunction(key, timeArrayListlength, timeArrayList, pivot = 0) {
     let currentPivot = pivot;
-    // console.log(key, length, arrayList);
-    this[key] = window.setTimeout(() => {
-      currentPivot += 1;
-      if (currentPivot === length) {
-        console.log(1);
-      } else {
-        this.timeoutFunction(key, length, arrayList, currentPivot);
-        console.log(2);
-      }
-    }, arrayList[currentPivot]);
+    console.log(`定时器${key}已启动`);
+    return new Promise(resolve => {
+      this[key] = window.setTimeout(async () => {
+        currentPivot += 1;
+        if (currentPivot === timeArrayListlength) {
+          resolve({ status: true });
+        } else {
+          const { status } = await this.timeoutFunction(
+            key,
+            timeArrayListlength,
+            timeArrayList,
+            currentPivot
+          );
+          if (status) resolve({ status: true });
+        }
+      }, timeArrayList[currentPivot]);
+    });
   }
 
   get list() {
     return this.cacheList;
+  }
+
+  set list(list) {
+    console.log('list:', list);
+    this.cacheList = list;
   }
 }

@@ -77,7 +77,7 @@ app.on('ready', async () => {
     center: true,
     resizable: false,
     frame: false,
-    transparent: true,
+    transparent: false,
     alwaysOnTop: true,
     skipTaskbar: true,
     icon: path.join(__dirname, '/ico.ico'),

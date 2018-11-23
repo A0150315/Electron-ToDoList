@@ -1,12 +1,12 @@
-// @flow
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import Home from '../components/Home';
 import AddBottom from '../components/AddBottom';
 import Timer from '../utils/Timer';
+import * as viewbroadcastActions from '../actions/viewbroadcast';
 
-type Props = {};
-
-export default class HomePage extends Component<Props> {
+class HomePage extends Component<Props> {
   props: Props;
 
   constructor(props) {
@@ -26,7 +26,8 @@ export default class HomePage extends Component<Props> {
 
   componentWillMount() {
     let list = window.localStorage.getItem('userData');
-    if (list) list = JSON.parse(list);
+    list = list ? JSON.parse(list) : [];
+    // new Timer的时候已完成定时器初始化
     this.setState(
       {
         list,
@@ -65,7 +66,7 @@ export default class HomePage extends Component<Props> {
     this.returnDefault(index);
   };
 
-  deleteItem = (index, event) => {
+  deleteItem = (index, key, event) => {
     // 删除一个项目
     const { state } = this;
     event.stopPropagation();
@@ -87,7 +88,8 @@ export default class HomePage extends Component<Props> {
       }),
       () => {
         const nextState = this.state;
-        window.localStorage.setItem('userData', JSON.stringify(nextState.list));
+        // 删除 index 项目定时器
+        this.updateCache(nextState.list, key, 'delete');
       }
     );
   };
@@ -125,6 +127,7 @@ export default class HomePage extends Component<Props> {
       state.editingItemIndex !== -1 &&
       !state.list[state.editingItemIndex].main
     ) {
+      const { key } = state.list[state.editingItemIndex];
       const isContinue: boolean = window.confirm('你确定不写点什么？');
       if (!isContinue) return;
       let newEditingItemIndex;
@@ -144,23 +147,36 @@ export default class HomePage extends Component<Props> {
           list: newList
         },
         () => {
-          // 设置本地缓存
-          window.localStorage.setItem('userData', JSON.stringify(newList));
           // 删除 editingItemIndex 项目的定时器
+          this.updateCache(newList, key, 'delete');
         }
       );
     } else {
       this.setState({ editingItemIndex: index }, () => {
         // 每次点击后更新本地列表
-        if (state.editingItemIndex !== index && state.editingItemIndex !== -1)
-          window.localStorage.setItem('userData', JSON.stringify(state.list));
-        // 重置 editingItemIndex 项目的定时器
+        if (state.editingItemIndex !== index && state.editingItemIndex !== -1) {
+          // 重置 editingItemIndex 项目的定时器
+          const { key } = state.list[state.editingItemIndex];
+          this.updateCache(state.list, key, 'update');
+        }
       });
     }
   };
 
+  // 更新本地缓存 定时器
+  updateCache = (newList, key, type) => {
+    const { state } = this;
+    window.localStorage.setItem('userData', JSON.stringify(newList));
+    state.listTimer.list = newList;
+    state.listTimer[`${type}Timer`](key);
+  };
+
   render() {
     const { state } = this;
+    // const { deletement, deleteItem, counter } = this.props;
+    // console.log(deletement, deleteItem, counter);
+    // deleteItem(1, 2, 3, 4);
+    // console.log(this.props);
     return (
       <div
         onClick={() => this.returnDefault()}
@@ -183,3 +199,18 @@ export default class HomePage extends Component<Props> {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    counter: state.counter
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(viewbroadcastActions, dispatch);
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomePage);
