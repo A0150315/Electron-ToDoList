@@ -173,10 +173,8 @@ class HomePage extends Component<Props> {
 
   render() {
     const { state } = this;
-    // const { deletement, deleteItem, counter } = this.props;
-    // console.log(deletement, deleteItem, counter);
-    // deleteItem(1, 2, 3, 4);
-    // console.log(this.props);
+    const { viewbroadcast } = this.props;
+    console.log(viewbroadcast);
     return (
       <div
         onClick={() => this.returnDefault()}
@@ -201,9 +199,7 @@ class HomePage extends Component<Props> {
 }
 
 function mapStateToProps(state) {
-  return {
-    counter: state.counter
-  };
+  return { viewbroadcast: state.viewbroadcast };
 }
 
 function mapDispatchToProps(dispatch) {
