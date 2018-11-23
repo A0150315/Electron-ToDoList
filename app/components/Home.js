@@ -8,7 +8,6 @@ import styles from './Home.css';
 import deleteIcon from '../img/deleteIcon.png'; // 垃圾桶图标
 
 type Props = {};
-// ipcRenderer.send('add');
 
 export default class Home extends Component<Props> {
   props: Props;
@@ -20,6 +19,7 @@ export default class Home extends Component<Props> {
   };
 
   render() {
+    // ipcRenderer.send('add');
     const { props } = this;
     return (
       <div className={styles.container}>

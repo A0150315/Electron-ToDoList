@@ -35,7 +35,6 @@ export default class HomePage extends Component<Props> {
       () => {
         const { state } = this;
         console.log(state.listTimer);
-        // 初始化定时器
       }
     );
   }
