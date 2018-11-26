@@ -1,3 +1,7 @@
+import fs from 'fs';
+import path from 'path';
+import { remote } from 'electron';
+
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -24,20 +28,23 @@ class HomePage extends Component<Props> {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let list = window.localStorage.getItem('userData');
     list = list ? JSON.parse(list) : [];
-    // new Timer的时候已完成定时器初始化
     this.setState(
       {
-        list,
-        listTimer: new Timer(list)
+        list
       },
       () => {
-        const { state } = this;
-        console.log(state.listTimer);
+        // new Timer的时候已完成定时器初始化
+        // 待列表初始化完成后再初始化定时器
+        this.setState({ listTimer: new Timer(list, this) });
       }
     );
+  }
+
+  componentWillReceiveProps(a, v, b, f) {
+    console.log(a, v, b, f);
   }
 
   addItem = () => {
@@ -69,7 +76,7 @@ class HomePage extends Component<Props> {
   deleteItem = (index, key, event) => {
     // 删除一个项目
     const { state } = this;
-    event.stopPropagation();
+    if (event) event.stopPropagation();
     let newEditingItemIndex = -1;
     if (state.editingItemIndex !== -1) {
       if (state.editingItemIndex > index) {
@@ -117,6 +124,32 @@ class HomePage extends Component<Props> {
 
   handleDeadlineChange = event => {
     this.handleChange(event, 'deadline');
+  };
+
+  handdleImage = (index, evnet) => {
+    console.log(index);
+    const imgFolderPath = remote.app.getPath('userCache'); // 图片缓存文件夹路径
+    const fileName = evnet.dataTransfer.files[0].name; // 文件名
+    const sourceFile = evnet.dataTransfer.files[0].path; // 原文件路径
+    const destPath = path.join(imgFolderPath, fileName); // 输出文件名
+    const readStream = fs.createReadStream(sourceFile); // 输入流
+    const writeStream = fs.createWriteStream(destPath); // 输出流
+    if (!fs.existsSync(imgFolderPath)) {
+      fs.mkdirSync(imgFolderPath);
+    }
+    readStream.pipe(writeStream);
+    writeStream.on('finish', () => {
+      const { list } = this.state;
+      list[index].img = destPath;
+      this.setState(
+        {
+          list
+        },
+        () => {
+          window.localStorage.setItem('userData', JSON.stringify(list));
+        }
+      );
+    });
   };
 
   returnDefault = (index = -1) => {
@@ -173,8 +206,6 @@ class HomePage extends Component<Props> {
 
   render() {
     const { state } = this;
-    const { viewbroadcast } = this.props;
-    console.log(viewbroadcast);
     return (
       <div
         onClick={() => this.returnDefault()}
@@ -186,6 +217,7 @@ class HomePage extends Component<Props> {
           handleInputChange={this.handleInputChange}
           handleStartTimeChange={this.handleStartTimeChange}
           handleDeadlineChange={this.handleDeadlineChange}
+          handdleImage={this.handdleImage}
           editItem={this.editItem}
           handleTextAreaChange={this.handleTextAreaChange}
           deleteItem={this.deleteItem}

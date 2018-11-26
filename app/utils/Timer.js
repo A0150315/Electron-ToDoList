@@ -1,5 +1,6 @@
 export default class Timer {
-  constructor(list = []) {
+  constructor(list = [], ReactComponent) {
+    this.actingComponent = ReactComponent;
     this.cacheList = list;
     this.initTimer();
     return this;
@@ -30,7 +31,10 @@ export default class Timer {
   async startTimer(key, deadlineTime, index) {
     const leftTime = deadlineTime.getTime() - new Date();
     if (leftTime <= 0) {
-      alert(`第${index + 1}条已过期`);
+      const isContinue: boolean = window.confirm(
+        `第${index + 1}条已过期，请问需要删除吗`
+      );
+      if (isContinue) this.actingComponent.deleteItem(index, key);
       return false;
     }
     const leftTimeLength = leftTime.toString().length;
@@ -43,7 +47,9 @@ export default class Timer {
       leftTimeLength,
       leftTimeArray
     );
-    if (status) alert(`第${index + 1}条时间到啦`);
+    if (status) {
+      alert(`第${index + 1}条时间到啦`);
+    }
   }
 
   // 大数也适用的setTimeout

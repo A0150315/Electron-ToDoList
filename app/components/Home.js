@@ -1,5 +1,3 @@
-// @flow
-
 import React, { Component } from 'react';
 import { shell } from 'electron';
 
@@ -7,10 +5,10 @@ import styles from './Home.css';
 
 import deleteIcon from '../img/deleteIcon.png'; // 垃圾桶图标
 
-type Props = {};
-
 export default class Home extends Component<Props> {
   props: Props;
+
+  componentDidMount() {}
 
   openBrowser = (linkString, proxy) => {
     proxy.stopPropagation();
@@ -32,6 +30,11 @@ export default class Home extends Component<Props> {
               className={styles.mainBlock}
               onClick={proxy => props.editItem(i, proxy)}
               role="presentation"
+              onDrop={proxy => {
+                props.handdleImage(i, proxy);
+                proxy.stopPropagation();
+                proxy.preventDefault();
+              }}
             >
               <i className={styles.order}>{i + 1}</i>
               {props.editingItemIndex === i ? (
@@ -73,19 +76,23 @@ export default class Home extends Component<Props> {
                     type="datetime-local"
                     onClick={proxy => proxy.stopPropagation()}
                   />
-                  {e.img}
+                  <img src={e.img} alt="#" className={styles.img} />
                 </div>
               ) : (
                 <div className={styles.mainText}>
                   <div>{e.main}</div>
-                  <a
-                    href="javascript:void(0)"
-                    onClick={proxy => this.openBrowser(e.link, proxy)}
-                    rel="noreferrer noopener"
-                  >
-                    {e.link}
-                  </a>
-                  <br />
+                  {e.link && (
+                    <div>
+                      <a
+                        href="javascript:void(0)"
+                        onClick={proxy => this.openBrowser(e.link, proxy)}
+                        rel="noreferrer noopener"
+                      >
+                        {e.link}
+                      </a>
+                      <br />
+                    </div>
+                  )}
                   <br />
                   {/* <div>
                     Start Time:
@@ -99,7 +106,7 @@ export default class Home extends Component<Props> {
                       {e.deadline}
                     </div>
                   )}
-                  <div>{e.img}</div>
+                  {e.img && <img className={styles.img} src={e.img} alt="#" />}
                   <img
                     src={deleteIcon}
                     alt="delete"

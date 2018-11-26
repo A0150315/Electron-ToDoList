@@ -12,7 +12,14 @@
  */
 import { app, BrowserWindow, Tray, Menu, nativeImage, ipcMain } from 'electron';
 import path from 'path';
+import fs from 'fs';
 import MenuBuilder from './menu';
+
+const userImageCache = path.join(app.getPath('userCache'), 'image');
+if (!fs.existsSync(userImageCache)) {
+  fs.mkdirSync(userImageCache);
+}
+app.setPath('userCache', userImageCache);
 
 // const sqlite3 = require('sqlite3').verbose();
 
@@ -77,12 +84,14 @@ app.on('ready', async () => {
     center: true,
     resizable: false,
     frame: false,
-    transparent: true,
     alwaysOnTop: true,
     skipTaskbar: true,
     icon: path.join(__dirname, '/ico.ico'),
     maximizable: false,
-    minimizable: false
+    minimizable: false,
+    // 不透明版
+    transparent: true
+    // backgroundColor: '#FEE5E8'
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
