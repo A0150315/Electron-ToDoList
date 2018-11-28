@@ -9,6 +9,29 @@
     Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+.background {
+  width: 250px;
+  height: 400px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  z-index: -1;
+
+  /* 不透明 */
+  /* background-color: #000;
+      opacity: .1;
+  background-image: url(./img/bg.png);
+  background-size:cover; */
+  /* filter: blur(1px) */
+
+  /* 透明 */
+  background-color: #fee5e8;
+  opacity: 0.3;
+  border-radius: 5px;
+}
+
 body {
   /* -webkit-app-region: drag; */
   margin: 0;

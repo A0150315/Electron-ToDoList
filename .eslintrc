@@ -10,6 +10,19 @@
     "node": true
   },
   "rules": {
+    "no-unused-expressions": [
+      "error",
+      {
+        "allowShortCircuit": true,
+        "allowTernary": true
+      }
+    ],
+    "no-bitwise": [
+      2,
+      {
+        "int32Hint": true
+      }
+    ],
     "linebreak-style": 0,
     "arrow-parens": ["off"],
     "compat/compat": "error",
