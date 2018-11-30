@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { shell } from 'electron';
 
 import styles from './Home.css';
@@ -7,7 +7,7 @@ import deleteIcon from '../img/deleteIcon.png'; // 垃圾桶图标
 
 const theDate = new Date(2018, 7, 18);
 
-export default class Home extends Component<Props> {
+export default class Home extends PureComponent<Props> {
   props: Props;
 
   constructor(props) {
