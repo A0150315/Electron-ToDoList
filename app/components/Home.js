@@ -5,10 +5,23 @@ import styles from './Home.css';
 
 import deleteIcon from '../img/deleteIcon.png'; // 垃圾桶图标
 
+const theDate = new Date(2018, 7, 18);
+
 export default class Home extends Component<Props> {
   props: Props;
 
-  componentDidMount() {}
+  constructor(props) {
+    super(props);
+    this.state = { time: null };
+  }
+
+  componentWillMount() {
+    this.timer && clearTimeout(this.timer);
+  }
+
+  componentDidMount() {
+    this.startDaysTimer();
+  }
 
   openBrowser = (linkString, proxy) => {
     proxy.stopPropagation();
@@ -16,11 +29,21 @@ export default class Home extends Component<Props> {
     return true;
   };
 
+  startDaysTimer = () => {
+    const nowaday = new Date();
+    const dis = nowaday.getTime() - theDate.getTime();
+    this.setState({
+      time: Math.floor(dis / 3600 / 1000 / 24)
+    });
+    this.timer = window.setTimeout(this.startDaysTimer, 1000);
+  };
+
   render() {
     // ipcRenderer.send('add');
-    const { props } = this;
+    const { props, state } = this;
     return (
       <div className={styles.container}>
+        <span className={styles.days}>{state.time || 'null'} 天</span>
         <p className={styles.title}>陈小怡的待办事项</p>
         <ul className={styles.mainList}>
           {/* {props.editingItemIndex}   */}
