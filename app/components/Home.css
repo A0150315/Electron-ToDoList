@@ -14,14 +14,6 @@
   padding: 14px;
 }
 
-.days {
-  font-size: 12px;
-  margin: 0;
-  position: fixed;
-  top: 14px;
-  right: 14px;
-}
-
 .container h2 {
   font-size: 5rem;
 }
@@ -41,6 +33,13 @@
   position: absolute;
   font-size: 2em;
   left: 0px;
+  display: block;
+  width: 40px;
+  cursor: pointer;
+}
+
+.order_active {
+  color: #fee5e8 !important;
 }
 
 .mainText {

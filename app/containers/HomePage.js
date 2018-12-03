@@ -43,10 +43,6 @@ class HomePage extends Component<Props> {
     );
   }
 
-  componentWillReceiveProps(a, v, b, f) {
-    console.log(a, v, b, f);
-  }
-
   addItem = () => {
     // 添加一个空项目，并使其处于编辑状态
     const { state } = this;
@@ -62,6 +58,8 @@ class HomePage extends Component<Props> {
         main: '',
         link: '',
         img: '',
+        deadline: '',
+        isDone: false,
         key: btoa(prevState.list.length + new Date().getTime())
       })
     }));
@@ -101,12 +99,26 @@ class HomePage extends Component<Props> {
     );
   };
 
+  highlightToggle = index => {
+    const { list } = this.state;
+    list[index].isDone = !list[index].isDone;
+    this.setState(
+      {
+        list
+      },
+      () => {
+        window.localStorage.setItem('userData', JSON.stringify(list));
+      }
+    );
+  };
+
   handleChange = (event, type) => {
     // 处理输入框改变动作
     const { state } = this;
     const { editingItemIndex } = state;
     const list = [...state.list];
     list[editingItemIndex][type] = event.target.value;
+    console.log(event.target.value);
     this.setState({ list });
   };
 
@@ -217,6 +229,7 @@ class HomePage extends Component<Props> {
           handleInputChange={this.handleInputChange}
           handleStartTimeChange={this.handleStartTimeChange}
           handleDeadlineChange={this.handleDeadlineChange}
+          highlightToggle={this.highlightToggle}
           handdleImage={this.handdleImage}
           editItem={this.editItem}
           handleTextAreaChange={this.handleTextAreaChange}

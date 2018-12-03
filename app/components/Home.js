@@ -1,27 +1,14 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { shell } from 'electron';
 
 import styles from './Home.css';
 
 import deleteIcon from '../img/deleteIcon.png'; // 垃圾桶图标
 
-const theDate = new Date(2018, 7, 18);
+import DaysTimer from './DaysTimer';
 
-export default class Home extends PureComponent<Props> {
+export default class Home extends Component<Props> {
   props: Props;
-
-  constructor(props) {
-    super(props);
-    this.state = { time: null };
-  }
-
-  componentWillMount() {
-    this.timer && clearTimeout(this.timer);
-  }
-
-  componentDidMount() {
-    this.startDaysTimer();
-  }
 
   openBrowser = (linkString, proxy) => {
     proxy.stopPropagation();
@@ -29,27 +16,24 @@ export default class Home extends PureComponent<Props> {
     return true;
   };
 
-  startDaysTimer = () => {
-    const nowaday = new Date();
-    const dis = nowaday.getTime() - theDate.getTime();
-    this.setState({
-      time: Math.floor(dis / 3600 / 1000 / 24)
-    });
-    this.timer = window.setTimeout(this.startDaysTimer, 1000);
+  formatDatetimeLocal = dateTimeLocalString => {
+    const dateTimeLocalArray = dateTimeLocalString.split('T');
+    return dateTimeLocalArray.join(' ');
   };
 
   render() {
     // ipcRenderer.send('add');
-    const { props, state } = this;
+    const { props } = this;
     return (
       <div className={styles.container}>
-        <span className={styles.days}>{state.time || 'null'} 天</span>
+        <DaysTimer />
         <p className={styles.title}>陈小怡的待办事项</p>
         <ul className={styles.mainList}>
           {/* {props.editingItemIndex}   */}
           {props.list
             .map((e, i) => {
               const listLength = props.list.length;
+              console.log(e.isDone);
               return (
                 <li
                   key={e.key}
@@ -61,7 +45,19 @@ export default class Home extends PureComponent<Props> {
                     proxy.preventDefault();
                   }}
                 >
-                  <i className={styles.order}>{listLength - i}</i>
+                  <i
+                    className={
+                      !e.isDone
+                        ? styles.order
+                        : `${styles.order} ${styles.order_active}`
+                    }
+                    onClick={() => {
+                      props.highlightToggle(i);
+                    }}
+                    role="presentation"
+                  >
+                    {listLength - i}
+                  </i>
                   {props.editingItemIndex === i ? (
                     <div className={styles.mainText}>
                       <textarea
@@ -88,6 +84,7 @@ export default class Home extends PureComponent<Props> {
                           }
                         }}
                       />
+
                       {/* <input
                     value={e.startTime}
                     onChange={props.handleStartTimeChange}
@@ -124,18 +121,13 @@ export default class Home extends PureComponent<Props> {
                           <br />
                         </div>
                       )}
-                      <br />
                       {/* <div>
                     Start Time:
                     <br />
                     {e.startTime}
                   </div> */}
                       {e.deadline && (
-                        <div>
-                          Deadline:
-                          <br />
-                          {e.deadline}
-                        </div>
+                        <div>{this.formatDatetimeLocal(e.deadline)}</div>
                       )}
                       {e.img && (
                         <img className={styles.img} src={e.img} alt="#" />

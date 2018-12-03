@@ -32,7 +32,7 @@ export default class Timer {
     const leftTime = deadlineTime.getTime() - new Date();
     if (leftTime <= 0) {
       const isContinue: boolean = window.confirm(
-        `第${index + 1}条已过期，请问需要删除吗`
+        `第${this.length - index}条已过期，请问需要删除吗`
       );
       if (isContinue) this.actingComponent.deleteItem(index, key);
       return false;
@@ -48,7 +48,7 @@ export default class Timer {
       leftTimeArray
     );
     if (status) {
-      alert(`第${index + 1}条时间到啦`);
+      alert(`第${this.length - index}条时间到啦`);
     }
   }
 
@@ -76,6 +76,10 @@ export default class Timer {
 
   get list() {
     return this.cacheList;
+  }
+
+  get length() {
+    return this.list.length;
   }
 
   set list(list) {
