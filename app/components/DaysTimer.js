@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+// import { ipcRenderer } from 'electron';
 import styles from './DaysTimer.css';
 
 const theDate = new Date(2018, 7, 18);
@@ -17,6 +18,7 @@ export default class DaysTimer extends PureComponent<Props> {
 
   componentDidMount() {
     this.startDaysTimer();
+    // ipcRenderer.send('add');
   }
 
   startDaysTimer = () => {

@@ -1,7 +1,17 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
-import Routes from '../Routes';
+import { Switch, Route } from 'react-router';
+
+import App from '../App';
+import QRCodePage from './QRCodePage';
+
+import routes from './routes.json';
+
+type Props = {
+  store: Store,
+  history: {}
+};
 
 export default class Root extends Component<Props> {
   render() {
@@ -9,7 +19,11 @@ export default class Root extends Component<Props> {
     return (
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <Routes />
+          <App>
+            <Switch>
+              <Route path={routes.HOME} component={QRCodePage} />
+            </Switch>
+          </App>
         </ConnectedRouter>
       </Provider>
     );

@@ -20,7 +20,8 @@
     "no-bitwise": [
       2,
       {
-        "int32Hint": true
+        "int32Hint": true,
+        "allow": ["~"]
       }
     ],
     "linebreak-style": 0,

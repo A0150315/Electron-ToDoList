@@ -1,7 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import Root from './containers/Root';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
 
@@ -10,45 +9,58 @@ const store = configureStore();
 let root;
 
 if (document.getElementById('root')) {
-  root = document.getElementById('root');
-  render(
-    <AppContainer>
-      <Root store={store} history={history} />
-    </AppContainer>,
-    root
-  );
-
-  if (module.hot) {
-    module.hot.accept('./containers/Root', () => {
-      const NextRoot = require('./containers/Root'); // eslint-disable-line global-require
+  import('./containers/Root')
+    .then(RootModule => {
+      const Root = RootModule.default;
+      root = document.getElementById('root');
       render(
         <AppContainer>
-          <NextRoot store={store} history={history} />
+          <Root store={store} history={history} />
         </AppContainer>,
         root
       );
-    });
-  }
+
+      if (module.hot) {
+        module.hot.accept('./containers/Root', () => {
+          const NextRoot = require('./containers/Root'); // eslint-disable-line global-require
+          render(
+            <AppContainer>
+              <NextRoot store={store} history={history} />
+            </AppContainer>,
+            root
+          );
+        });
+      }
+      return Root;
+    })
+    .catch(e => console.log(e));
 }
 
 // 新窗口
-if (document.getElementById('root1')) {
-  root = document.getElementById('root1');
-  render(
-    <AppContainer>
-      <div>1</div>
-    </AppContainer>,
-    root
-  );
-
-  if (module.hot) {
-    module.hot.accept(() => {
+if (document.getElementById('wechat')) {
+  import('./containers/wechat/Root')
+    .then(RootModule => {
+      const WechatRoot = RootModule.default;
+      root = document.getElementById('wechat');
       render(
         <AppContainer>
-          <div>1</div>
+          <WechatRoot store={store} history={history} />
         </AppContainer>,
         root
       );
-    });
-  }
+
+      if (module.hot) {
+        module.hot.accept('./containers/wechat/Root', () => {
+          const NextRoot = require('./containers/wechat/Root'); // eslint-disable-line global-require
+          render(
+            <AppContainer>
+              <NextRoot store={store} history={history} />
+            </AppContainer>,
+            root
+          );
+        });
+      }
+      return WechatRoot;
+    })
+    .catch(e => console.log(e));
 }
