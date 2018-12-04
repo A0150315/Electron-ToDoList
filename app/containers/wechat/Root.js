@@ -8,11 +8,6 @@ import QRCodePage from './QRCodePage';
 
 import routes from './routes.json';
 
-type Props = {
-  store: Store,
-  history: {}
-};
-
 export default class Root extends Component<Props> {
   render() {
     const { store, history } = this.props;

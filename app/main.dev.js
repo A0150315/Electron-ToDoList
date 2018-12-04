@@ -24,6 +24,7 @@ app.setPath('userCache', userImageCache);
 // const sqlite3 = require('sqlite3').verbose();
 
 let mainWindow = null;
+let newwin = null;
 let tray = null;
 const trayIconNative = nativeImage.createFromPath(
   path.join(__dirname, './ico.ico')
@@ -76,8 +77,16 @@ app.on('ready', async () => {
     await installExtensions();
   }
 
+  // mainWindow = new BrowserWindow({
+  //   title: '略略略',
+  //   width: 600,
+  //   height: 400,
+  //   frame: true,
+  //   parent: mainWindow // win是主窗口
+  // });
+  // mainWindow.loadURL(`file://${__dirname}/test.html`);
+
   mainWindow = new BrowserWindow({
-    title: '略略略',
     show: true,
     width: 250,
     height: 400,
@@ -89,9 +98,7 @@ app.on('ready', async () => {
     icon: path.join(__dirname, '/ico.ico'),
     maximizable: false,
     minimizable: false,
-    // 不透明版
     transparent: true
-    // backgroundColor: '#FEE5E8'
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
@@ -109,6 +116,18 @@ app.on('ready', async () => {
     tray.setToolTip('Chan List');
     tray.setContextMenu(
       Menu.buildFromTemplate([
+        {
+          label: '打开微信自动回复（实验性）',
+          click: () => {
+            openWechatPage();
+          }
+        },
+        {
+          label: '退出微信自动回复（实验性）',
+          click: () => {
+            newwin.close();
+          }
+        },
         {
           label: '退出',
           click: () => {
@@ -129,10 +148,15 @@ app.on('ready', async () => {
 });
 
 // ipc主程序监听add事件创建新窗口
-ipcMain.on('add', () => {
-  let newwin = new BrowserWindow({
+ipcMain.on('add', openWechatPage);
+ipcMain.on('closeWechat', () => {
+  newwin.hide();
+});
+
+function openWechatPage() {
+  newwin = new BrowserWindow({
     width: 600,
-    height: 400,
+    height: 600,
     frame: true,
     parent: mainWindow // win是主窗口
   });
@@ -140,4 +164,4 @@ ipcMain.on('add', () => {
   newwin.on('closed', () => {
     newwin = null;
   });
-});
+}
