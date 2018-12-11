@@ -30,9 +30,11 @@ export default class Timer {
 
   async startTimer(key, deadlineTime, index) {
     const leftTime = deadlineTime.getTime() - new Date();
-    if (leftTime <= 0) {
+    if (leftTime <= 0 && !this.cacheList[index].isDone) {
       const isContinue: boolean = window.confirm(
-        `第${this.length - index}条已过期，请问需要删除吗`
+        `第${this.length - index}条：${
+          this.cacheList[index].main
+        }\n已过期，请问需要删除吗`
       );
       if (isContinue) this.actingComponent.deleteItem(index, key);
       return false;
