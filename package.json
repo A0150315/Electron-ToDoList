@@ -58,7 +58,8 @@
       "ico.ico"
     ],
     "dmg": {
-      "contents": [{
+      "contents": [
+        {
           "x": 130,
           "y": 220
         },
@@ -211,6 +212,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.2.0",
     "aws-sdk": "^2.333.0",
+    "axios": "^0.18.0",
     "devtron": "^1.4.0",
     "electron-debug": "^2.0.0",
     "history": "^4.7.2",
