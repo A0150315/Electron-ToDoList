@@ -1,13 +1,14 @@
-import fs from 'fs';
-import path from 'path';
-import { remote } from 'electron';
-
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Home from '../components/Home';
 import AddBottom from '../components/AddBottom';
 import Timer from '../utils/Timer';
+import {
+  outputUserData,
+  outputImgCache
+  // getUserData
+} from '../utils/FileController';
 import * as viewbroadcastActions from '../actions/viewbroadcast';
 
 class HomePage extends Component<Props> {
@@ -24,12 +25,19 @@ class HomePage extends Component<Props> {
         // }
       ],
       editingItemIndex: -1,
-      listTimer: null
+      listTimer: null,
+      isMoving: false,
+      mouseX: 0,
+      mouseY: 0,
+      top: 340,
+      left: 190,
+      isAllowAddItem: true
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     let list = window.localStorage.getItem('userData');
+    // let list = await getUserData(); // 下版本正式启用
     list = list ? JSON.parse(list) : [];
     this.setState(
       {
@@ -42,6 +50,41 @@ class HomePage extends Component<Props> {
       }
     );
   }
+
+  startMoving = $event => {
+    this.setState({
+      isMoving: true,
+      mouseX: $event.clientX - document.querySelector('#addBtn').offsetLeft,
+      mouseY: $event.clientY - document.querySelector('#addBtn').offsetTop
+    });
+  };
+
+  endMoving = () => {
+    setTimeout(() => {
+      this.setState({ isMoving: false, isAllowAddItem: true });
+    });
+  };
+
+  move = $event => {
+    const { state } = this;
+    if (state.isAllowAddItem)
+      this.setState({
+        isAllowAddItem: false
+      });
+    let cX = $event.clientX - state.mouseX;
+    let cY = $event.clientY - state.mouseY;
+    if (cY <= 47) {
+      cY = 47;
+    } else if (cY >= 360) {
+      cY = 360;
+    }
+    if (cX <= 0) {
+      cX = 0;
+    } else if (cX >= 210) {
+      cX = 210;
+    }
+    this.setState({ left: cX, top: cY });
+  };
 
   addItem = () => {
     // 添加一个空项目，并使其处于编辑状态
@@ -108,6 +151,7 @@ class HomePage extends Component<Props> {
       },
       () => {
         window.localStorage.setItem('userData', JSON.stringify(list));
+        outputUserData(list);
       }
     );
   };
@@ -138,30 +182,21 @@ class HomePage extends Component<Props> {
     this.handleChange(event, 'deadline');
   };
 
-  handdleImage = (index, evnet) => {
-    console.log(index);
-    const imgFolderPath = remote.app.getPath('userCache'); // 图片缓存文件夹路径
+  handdleImage = async (index, evnet) => {
     const fileName = evnet.dataTransfer.files[0].name; // 文件名
-    const sourceFile = evnet.dataTransfer.files[0].path; // 原文件路径
-    const destPath = path.join(imgFolderPath, fileName); // 输出文件名
-    const readStream = fs.createReadStream(sourceFile); // 输入流
-    const writeStream = fs.createWriteStream(destPath); // 输出流
-    if (!fs.existsSync(imgFolderPath)) {
-      fs.mkdirSync(imgFolderPath);
-    }
-    readStream.pipe(writeStream);
-    writeStream.on('finish', () => {
-      const { list } = this.state;
-      list[index].img = destPath;
-      this.setState(
-        {
-          list
-        },
-        () => {
-          window.localStorage.setItem('userData', JSON.stringify(list));
-        }
-      );
-    });
+    const sourcePath = evnet.dataTransfer.files[0].path; // 原文件路径
+    const destPath = await outputImgCache(fileName, sourcePath);
+    const { list } = this.state;
+    list[index].img = destPath;
+    this.setState(
+      {
+        list
+      },
+      () => {
+        window.localStorage.setItem('userData', JSON.stringify(list));
+        outputUserData(list);
+      }
+    );
   };
 
   returnDefault = (index = -1) => {
@@ -212,6 +247,7 @@ class HomePage extends Component<Props> {
   updateCache = (newList, key, type) => {
     const { state } = this;
     window.localStorage.setItem('userData', JSON.stringify(newList));
+    outputUserData(newList);
     state.listTimer.list = newList;
     state.listTimer[`${type}Timer`](key);
   };
@@ -223,6 +259,25 @@ class HomePage extends Component<Props> {
         onClick={() => this.returnDefault()}
         role="presentation"
         style={{ width: '100%' }}
+        onMouseDown={proxy => {
+          if (proxy.target.id === 'addBtn') {
+            proxy.stopPropagation();
+            proxy.preventDefault();
+            this.startMoving(proxy);
+          }
+        }}
+        onMouseUp={proxy => {
+          proxy.preventDefault();
+          proxy.stopPropagation();
+          this.endMoving();
+        }}
+        onMouseMove={proxy => {
+          if (state.isMoving) {
+            proxy.preventDefault();
+            proxy.stopPropagation();
+            this.move(proxy);
+          }
+        }}
       >
         <Home
           list={state.list}
@@ -237,7 +292,12 @@ class HomePage extends Component<Props> {
           editingItemIndex={state.editingItemIndex}
           returnDefault={this.returnDefault}
         />
-        <AddBottom addItem={this.addItem} />
+        <AddBottom
+          addItem={this.addItem}
+          top={state.top}
+          left={state.left}
+          isAllowAddItem={state.isAllowAddItem}
+        />
       </div>
     );
   }

@@ -32,7 +32,6 @@ export default class Home extends Component<Props> {
           {props.list
             .map((e, i) => {
               const listLength = props.list.length;
-              console.log(e.isDone);
               return (
                 <li
                   key={e.key}

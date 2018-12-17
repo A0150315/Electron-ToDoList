@@ -5,17 +5,18 @@ import styles from './AddBottom.css';
 type Props = {};
 
 export default class AddBottom extends Component<Props> {
-  props: Props;
-
   render() {
     const { props } = this;
     return (
       <p
         className={styles.outerContainer}
+        id="addBtn"
         onClick={event => {
           event.stopPropagation();
-          props.addItem();
+          event.preventDefault();
+          if (props.isAllowAddItem) props.addItem();
         }}
+        style={{ top: props.top, left: props.left }}
         role="presentation"
         onKeyDown={event => {
           event.stopPropagation();

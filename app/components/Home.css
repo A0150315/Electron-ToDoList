@@ -60,7 +60,7 @@
   margin: 0;
   height: calc(400px - 47px);
   overflow: auto;
-  width: 100%;
+  /* width: 100%; */
 }
 
 ::-webkit-scrollbar-thumb {

@@ -1,12 +1,10 @@
 .outerContainer {
   font-size: 1em;
   font-weight: bold;
-  background: #FEE5E8;
-  color:rgb(12, 12, 12);
+  background: #fee5e8;
+  color: rgb(12, 12, 12);
   user-select: none;
   position: fixed;
-  bottom: 20px;
-  right: 20px;
   padding: 0;
   margin: 0;
   width: 40px;
@@ -15,9 +13,9 @@
   text-align: center;
   border-radius: 50%;
   cursor: pointer;
-  transition: all .44s;
+  transition: opacity 0.44s;
 }
 
 .outerContainer:hover {
-  opacity: .5;
+  opacity: 0.5;
 }
