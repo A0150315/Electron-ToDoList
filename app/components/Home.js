@@ -6,6 +6,7 @@ import styles from './Home.css';
 import deleteIcon from '../img/deleteIcon.png'; // 垃圾桶图标
 
 import DaysTimer from './DaysTimer';
+import ProgressBar from './ProgressBar';
 
 export default class Home extends Component<Props> {
   props: Props;
@@ -139,6 +140,11 @@ export default class Home extends Component<Props> {
                       />
                     </div>
                   )}
+                  <ProgressBar
+                    index={i}
+                    item={e}
+                    handleProgressChange={props.handleProgressChange}
+                  />
                 </li>
               );
             })

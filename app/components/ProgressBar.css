@@ -1,0 +1,25 @@
+.progressbarContainer {
+  border-radius: 1px;
+  margin-right: 23px;
+  /* background: black; */
+  height: 10px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.progressUnderBar {
+  background: #fee5e8;
+  height: 2px;
+  flex: 1;
+}
+
+.progressbarPoint {
+  background: #fee5e8;
+  height: 8px;
+  width: 8px;
+  position: absolute;
+  top: 1px;
+  border-radius: 50%;
+}

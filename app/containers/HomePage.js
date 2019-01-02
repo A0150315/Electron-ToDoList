@@ -5,9 +5,9 @@ import Home from '../components/Home';
 import AddBottom from '../components/AddBottom';
 import Timer from '../utils/Timer';
 import {
-  outputUserData,
-  outputImgCache
-  // getUserData
+  outputUserData, // 输出用户数据文件
+  outputImgCache, // 输出图片缓存
+  getUserData // 获取用户数据
 } from '../utils/FileController';
 import * as viewbroadcastActions from '../actions/viewbroadcast';
 
@@ -36,8 +36,7 @@ class HomePage extends Component<Props> {
   }
 
   async componentDidMount() {
-    let list = window.localStorage.getItem('userData');
-    // let list = await getUserData(); // 下版本正式启用
+    let list = await getUserData(); // 下版本正式启用
     list = list ? JSON.parse(list) : [];
     this.setState(
       {
@@ -103,6 +102,7 @@ class HomePage extends Component<Props> {
         img: '',
         deadline: '',
         isDone: false,
+        progressOffset: 0,
         key: btoa(prevState.list.length + new Date().getTime())
       })
     }));
@@ -150,7 +150,6 @@ class HomePage extends Component<Props> {
         list
       },
       () => {
-        window.localStorage.setItem('userData', JSON.stringify(list));
         outputUserData(list);
       }
     );
@@ -182,9 +181,25 @@ class HomePage extends Component<Props> {
     this.handleChange(event, 'deadline');
   };
 
-  handdleImage = async (index, evnet) => {
-    const fileName = evnet.dataTransfer.files[0].name; // 文件名
-    const sourcePath = evnet.dataTransfer.files[0].path; // 原文件路径
+  handleProgressChange = (index, event) => {
+    if (event.target.getAttribute('name') === 'progressbarContainer') {
+      const progressOffset = event.nativeEvent.offsetX;
+      const { list } = this.state;
+      list[index].progressOffset = progressOffset;
+      this.setState(
+        {
+          list
+        },
+        () => {
+          outputUserData(list);
+        }
+      );
+    }
+  };
+
+  handdleImage = async (index, event) => {
+    const fileName = event.dataTransfer.files[0].name; // 文件名
+    const sourcePath = event.dataTransfer.files[0].path; // 原文件路径
     const destPath = await outputImgCache(fileName, sourcePath);
     const { list } = this.state;
     list[index].img = destPath;
@@ -193,7 +208,6 @@ class HomePage extends Component<Props> {
         list
       },
       () => {
-        window.localStorage.setItem('userData', JSON.stringify(list));
         outputUserData(list);
       }
     );
@@ -246,7 +260,6 @@ class HomePage extends Component<Props> {
   // 更新本地缓存 定时器
   updateCache = (newList, key, type) => {
     const { state } = this;
-    window.localStorage.setItem('userData', JSON.stringify(newList));
     outputUserData(newList);
     state.listTimer.list = newList;
     state.listTimer[`${type}Timer`](key);
@@ -288,6 +301,7 @@ class HomePage extends Component<Props> {
           handdleImage={this.handdleImage}
           editItem={this.editItem}
           handleTextAreaChange={this.handleTextAreaChange}
+          handleProgressChange={this.handleProgressChange}
           deleteItem={this.deleteItem}
           editingItemIndex={state.editingItemIndex}
           returnDefault={this.returnDefault}

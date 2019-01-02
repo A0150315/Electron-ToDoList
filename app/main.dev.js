@@ -117,6 +117,18 @@ app.on('ready', async () => {
     tray.setContextMenu(
       Menu.buildFromTemplate([
         {
+          label: '出来吧！',
+          click: () => {
+            mainWindow.show();
+          }
+        },
+        {
+          label: '隐藏',
+          click: () => {
+            mainWindow.hide();
+          }
+        },
+        {
           label: '打开微信自动回复（实验性）',
           click: () => {
             openWechatPage();
