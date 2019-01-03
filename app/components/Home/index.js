@@ -3,10 +3,10 @@ import { shell } from 'electron';
 
 import styles from './Home.css';
 
-import deleteIcon from '../img/deleteIcon.png'; // 垃圾桶图标
+import deleteIcon from '../../img/deleteIcon.png'; // 垃圾桶图标
 
-import DaysTimer from './DaysTimer';
-import ProgressBar from './ProgressBar';
+import DaysTimer from '../DaysTimer';
+import ProgressBar from '../ProgressBar';
 
 export default class Home extends Component<Props> {
   props: Props;
