@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Home from '../components/Home';
 import AddBottom from '../components/AddBottom';
@@ -10,6 +11,9 @@ import {
   getUserData // 获取用户数据
 } from '../utils/FileController';
 import * as viewbroadcastActions from '../actions/viewbroadcast';
+
+import routes from '../constants/routes.json';
+import EditorPage from './EditorPage';
 
 class HomePage extends Component<Props> {
   props: Props;
@@ -312,6 +316,9 @@ class HomePage extends Component<Props> {
           left={state.left}
           isAllowAddItem={state.isAllowAddItem}
         />
+        <Switch>
+          <Route path={routes.EDITOR} component={EditorPage} />
+        </Switch>
       </div>
     );
   }
@@ -325,7 +332,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(viewbroadcastActions, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HomePage);
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(HomePage)
+);

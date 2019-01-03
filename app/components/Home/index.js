@@ -8,7 +8,7 @@ import deleteIcon from '../../img/deleteIcon.png'; // 垃圾桶图标
 import DaysTimer from '../DaysTimer';
 import ProgressBar from '../ProgressBar';
 
-export default class Home extends Component<Props> {
+class Home extends Component<Props> {
   props: Props;
 
   openBrowser = (linkString, proxy) => {
@@ -21,6 +21,11 @@ export default class Home extends Component<Props> {
     const dateTimeLocalArray = dateTimeLocalString.split('T');
     return dateTimeLocalArray.join(' ');
   };
+
+  // pushH = () => {
+  //   console.log(this);
+  //   this.props.history.push('editor');
+  // };
 
   render() {
     const { props } = this;
@@ -154,3 +159,5 @@ export default class Home extends Component<Props> {
     );
   }
 }
+
+export default Home;
