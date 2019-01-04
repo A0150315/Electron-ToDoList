@@ -68,6 +68,13 @@ class Editor extends Component<Props> {
                 type="datetime-local"
                 onClick={proxy => proxy.stopPropagation()}
               />
+              {props.list[props.editingItemIndex].img && (
+                <img
+                  className={styles.img}
+                  src={props.list[props.editingItemIndex].img}
+                  alt="#"
+                />
+              )}
             </div>
           </div>
         )}
