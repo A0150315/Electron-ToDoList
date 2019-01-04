@@ -7,6 +7,7 @@ export default class Timer {
   }
 
   initTimer() {
+    console.log(this.list);
     this.list.forEach((e, index) => {
       if (e.deadline) this.startTimer(e.key, new Date(e.deadline), index);
     });

@@ -24,7 +24,7 @@ if (!fs.existsSync(imgFolderPath)) {
  * @param {Object} data
  */
 export function outputUserData(data) {
-  fs.writeFile(userDateOutputFilename, JSON.stringify(data), err => {
+  fs.writeFileSync(userDateOutputFilename, JSON.stringify(data), err => {
     ErrHandler(err);
   });
 }

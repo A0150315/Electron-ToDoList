@@ -35,7 +35,8 @@ class HomePage extends Component<Props> {
       mouseY: 0,
       top: 340,
       left: 190,
-      isAllowAddItem: true
+      isAllowAddItem: true,
+      isShowEditorPage: false
     };
   }
 
@@ -165,7 +166,6 @@ class HomePage extends Component<Props> {
     const { editingItemIndex } = state;
     const list = [...state.list];
     list[editingItemIndex][type] = event.target.value;
-    console.log(event.target.value);
     this.setState({ list });
   };
 
@@ -228,6 +228,7 @@ class HomePage extends Component<Props> {
       const { key } = state.list[state.editingItemIndex];
       const isContinue: boolean = window.confirm('你确定不写点什么？');
       if (!isContinue) return;
+      this.hideEditorPage();
       let newEditingItemIndex;
       if (index >= state.editingItemIndex) {
         newEditingItemIndex = index - 1;
@@ -251,6 +252,7 @@ class HomePage extends Component<Props> {
       );
     } else {
       this.setState({ editingItemIndex: index }, () => {
+        this.hideEditorPage();
         // 每次点击后更新本地列表
         if (state.editingItemIndex !== index && state.editingItemIndex !== -1) {
           // 重置 editingItemIndex 项目的定时器
@@ -264,9 +266,33 @@ class HomePage extends Component<Props> {
   // 更新本地缓存 定时器
   updateCache = (newList, key, type) => {
     const { state } = this;
-    outputUserData(newList);
     state.listTimer.list = newList;
     state.listTimer[`${type}Timer`](key);
+    outputUserData(newList);
+  };
+
+  showEditorPageToggle = () => {
+    this.setState({ isShowEditorPage: true });
+  };
+
+  hideEditorPageToggle = () => {
+    this.setState({ isShowEditorPage: false });
+  };
+
+  hideEditorPage = () => {
+    const { props, state } = this;
+    if (props.location.pathname === '/editor') {
+      this.hideEditorPageToggle();
+      setTimeout(() => {
+        props.history.goBack();
+      }, 200);
+    }
+    if (props.location.pathname === '/' && state.editingItemIndex !== -1) {
+      props.history.push('editor');
+      setTimeout(() => {
+        this.showEditorPageToggle();
+      }, 200);
+    }
   };
 
   render() {
@@ -317,7 +343,27 @@ class HomePage extends Component<Props> {
           isAllowAddItem={state.isAllowAddItem}
         />
         <Switch>
-          <Route path={routes.EDITOR} component={EditorPage} />
+          <Route
+            path={routes.EDITOR}
+            render={() => (
+              <EditorPage
+                list={state.list}
+                isShowEditorPage={state.isShowEditorPage}
+                showEditorPageToggle={this.showEditorPageToggle}
+                handleInputChange={this.handleInputChange}
+                handleStartTimeChange={this.handleStartTimeChange}
+                handleDeadlineChange={this.handleDeadlineChange}
+                highlightToggle={this.highlightToggle}
+                handdleImage={this.handdleImage}
+                editItem={this.editItem}
+                handleTextAreaChange={this.handleTextAreaChange}
+                handleProgressChange={this.handleProgressChange}
+                deleteItem={this.deleteItem}
+                editingItemIndex={state.editingItemIndex}
+                returnDefault={this.returnDefault}
+              />
+            )}
+          />
         </Switch>
       </div>
     );

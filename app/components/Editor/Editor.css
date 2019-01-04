@@ -1,0 +1,68 @@
+.page {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  background-color: #fff;
+  opacity: 0.95;
+  transition: top 0.4s ease;
+  border-radius: 5px;
+  overflow: auto;
+}
+
+.title {
+  font-size: 14px;
+  margin: 0;
+  padding: 14px;
+  padding-left: 18px;
+  color: #7e4c52;
+  background-color: #fee5e8;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  display: block;
+  border-bottom: 1px solid #fee5e8;
+  background-color: transparent;
+  color: rgba(197, 178, 181);
+  outline: none;
+  padding: 4px 8px 4px 0;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+.textarea {
+  width: 100%;
+  resize: none;
+  outline: none;
+  height: 100px;
+  border: none;
+  border-bottom: 1px solid #fee5e8;
+  background-color: transparent;
+  display: block;
+  color: rgba(197, 178, 181);
+  padding: 0;
+  padding: 8px 8px 8px 0;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+.textarea::-webkit-input-placeholder,
+.input::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.329);
+}
+
+textarea:focus,
+input:focus,
+textarea:hover,
+input:hover,
+input[type]:focus,
+.uneditable-input:focus {
+  border-color: #fcc1c8;
+  box-shadow: 0 -1px 1px #fcc1c8 inset, 0 1px 1px -1px #fcc1c8;
+  /* box-shadow:  */
+  outline: 0 none;
+}
