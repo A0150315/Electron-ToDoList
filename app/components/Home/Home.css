@@ -19,36 +19,6 @@
   font-size: 5rem;
 }
 
-.mainBlock {
-  position: relative;
-  padding-left: 40px;
-  min-height: 42px;
-  margin-bottom: 10px;
-}
-
-.mainBlock:first-of-type {
-  margin-top: 10px;
-}
-
-.order {
-  position: absolute;
-  font-size: 2em;
-  left: 0px;
-  display: block;
-  width: 40px;
-  cursor: pointer;
-}
-
-.order_active {
-  color: #fee5e8 !important;
-}
-
-.mainText {
-  word-wrap: break-word;
-  font-size: 0.9em;
-  margin-right: 23px;
-}
-
 .mainList {
   padding: 0 8px;
   margin: 0;
@@ -74,26 +44,4 @@
 ::-webkit-scrollbar-track-piece {
   background-color: rgba(254, 229, 232, 0.13);
   border-radius: 5px;
-}
-
-.deleteIcon {
-  /* width: 11.5px; */
-  height: auto;
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-  opacity: 0.3;
-  cursor: pointer;
-  font-size: 1em;
-}
-
-.deleteIcon:hover {
-  opacity: 1;
-}
-
-.img {
-  max-width: 104%;
-  height: auto;
-  margin-top: 10px;
 }

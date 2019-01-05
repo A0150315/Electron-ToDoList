@@ -48,7 +48,7 @@ export default class ProgressBar extends Component<Props> {
       >
         <i
           className={styles.progressbarPoint}
-          style={{ left: props.item.progressOffset }}
+          style={{ left: props.progressOffset }}
           name="progressbarPoint"
         />
         <div className={styles.progressUnderBar} name="progressbarContainer" />
