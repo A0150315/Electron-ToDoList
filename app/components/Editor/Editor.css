@@ -5,20 +5,48 @@
   height: 100vh;
   width: 100vw;
   margin: 0;
-  background-color: #fff;
-  opacity: 0.95;
-  transition: top 0.4s ease;
+  background-color: transparent;
+  /* opacity: 0.95; */
+  transition: top 0.2s ease;
   border-radius: 5px;
   overflow: auto;
+}
+
+.titleBlock {
+  margin: 0;
+  line-height: 1;
+  padding: 10px 0px;
+  user-select: none;
+  position: relative;
 }
 
 .title {
   font-size: 14px;
   margin: 0;
-  padding: 14px;
-  padding-left: 18px;
-  color: #7e4c52;
-  background-color: #fee5e8;
+  padding: 5px 20px;
+  line-height: 1;
+  border-top: 10px solid rgba(254, 229, 232, 0.1);
+  border-left: 38.5px solid rgba(254, 229, 232, 0.1);
+  border-right: 38.5px solid rgba(254, 229, 232, 0.1);
+}
+
+.title svg {
+  font-size: 1.2em;
+  transform: translateY(20%);
+}
+
+.titleBlock .titleFace {
+  position: absolute;
+  font-size: 1em;
+  top: 15px;
+  transform: translateY(-10%);
+}
+
+.titleFace_left {
+  left: 7.25px;
+}
+.titleFace_right {
+  right: 7.25px;
 }
 
 .input {
@@ -27,9 +55,9 @@
   display: block;
   border-bottom: 1px solid #fee5e8;
   background-color: transparent;
-  color: rgba(0, 0, 0, 0.836);
+  color: #fff;
   outline: none;
-  padding: 4px 8px 4px 0;
+  padding: 4px 0 4px 0;
   box-sizing: border-box;
   margin-bottom: 8px;
 }
@@ -43,16 +71,16 @@
   border-bottom: 1px solid #fee5e8;
   background-color: transparent;
   display: block;
-  color: rgba(0, 0, 0, 0.836);
+  color: #fff;
   padding: 0;
-  padding: 8px 8px 8px 0;
+  padding: 8px 0 8px 0;
   box-sizing: border-box;
   margin-bottom: 8px;
 }
 
 .textarea::-webkit-input-placeholder,
 .input::-webkit-input-placeholder {
-  color: rgba(0, 0, 0, 0.329);
+  color: #ccc;
 }
 
 textarea:focus,

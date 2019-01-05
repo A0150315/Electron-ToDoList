@@ -303,7 +303,7 @@ class HomePage extends Component<Props> {
         role="presentation"
         style={{ width: '100%' }}
         onMouseDown={proxy => {
-          if (proxy.target.id === 'addBtn') {
+          if (proxy.target.getAttribute('name') === 'addBtn') {
             proxy.stopPropagation();
             proxy.preventDefault();
             this.startMoving(proxy);
@@ -341,6 +341,7 @@ class HomePage extends Component<Props> {
           top={state.top}
           left={state.left}
           isAllowAddItem={state.isAllowAddItem}
+          editingItemIndex={state.editingItemIndex}
         />
         <Switch>
           <Route
