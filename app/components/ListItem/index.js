@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { shell } from 'electron';
+
 import styles from './ListItem.css';
 
 import ProgressBar from '../ProgressBar';
@@ -8,6 +10,17 @@ export default class DaysTimer extends Component<Props> {
     super(props);
     this.state = {};
   }
+
+  openBrowser = (linkString, proxy) => {
+    proxy.stopPropagation();
+    shell.openExternal(linkString);
+    return true;
+  };
+
+  formatDatetimeLocal = dateTimeLocalString => {
+    const dateTimeLocalArray = dateTimeLocalString.split('T');
+    return dateTimeLocalArray.join(' ');
+  };
 
   render() {
     const { props } = this;

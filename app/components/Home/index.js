@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { shell } from 'electron';
 
 import styles from './Home.css';
 
@@ -10,17 +9,6 @@ let moveDomItemTimer;
 
 class Home extends Component<Props> {
   props: Props;
-
-  openBrowser = (linkString, proxy) => {
-    proxy.stopPropagation();
-    shell.openExternal(linkString);
-    return true;
-  };
-
-  formatDatetimeLocal = dateTimeLocalString => {
-    const dateTimeLocalArray = dateTimeLocalString.split('T');
-    return dateTimeLocalArray.join(' ');
-  };
 
   // pushH = () => {
   //   console.log(this);
