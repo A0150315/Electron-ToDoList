@@ -6,15 +6,29 @@ import styles from './Editor.css';
 type Props = {};
 
 class Editor extends Component<Props> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isShowprogress: false
+    };
+  }
+
   componentDidMount() {
+    const { props } = this;
     setTimeout(() => {
-      const { props } = this;
       props.showEditorPageToggle();
+    });
+    let isShowprogressBar = false;
+    if (props.list[props.editingItemIndex]) {
+      isShowprogressBar = props.list[props.editingItemIndex].isShowprogress;
+    }
+    this.setState({
+      isShowprogress: isShowprogressBar
     });
   }
 
   render() {
-    const { props } = this;
+    const { props, state } = this;
     return (
       <div
         role="presentation"
@@ -259,6 +273,28 @@ class Editor extends Component<Props> {
                 type="datetime-local"
                 onClick={proxy => proxy.stopPropagation()}
               />
+              <div className={styles['checkbox-Block']}>
+                <div
+                  role="presentation"
+                  className={styles['checkbox-Element']}
+                  onClick={proxy => {
+                    proxy.stopPropagation();
+                    props.setProgressBarStatus(!state.isShowprogress);
+                    this.setState({
+                      isShowprogress: !state.isShowprogress
+                    });
+                  }}
+                >
+                  <span
+                    className={
+                      state.isShowprogress
+                        ? `${styles.checkbox} ${styles.checkbox_active}`
+                        : styles.checkbox
+                    }
+                  />
+                  开启滚动条
+                </div>
+              </div>
               {props.list[props.editingItemIndex].img && (
                 <img
                   className={styles.img}

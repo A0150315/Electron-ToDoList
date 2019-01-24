@@ -5,8 +5,6 @@ import styles from './Home.css';
 import DaysTimer from '../DaysTimer';
 import ListItem from '../ListItem';
 
-let moveDomItemTimer;
-
 class Home extends Component<Props> {
   props: Props;
 
@@ -28,19 +26,7 @@ class Home extends Component<Props> {
       >
         <DaysTimer />
         <p className={styles.title}>陈小怡的待办事项</p>
-        <ul
-          className={styles.mainList}
-          onMouseDown={() => {
-            moveDomItemTimer = setTimeout(() => {
-              console.log(1);
-              console.log(moveDomItemTimer);
-            }, 2000);
-          }}
-          onMouseUp={() => {
-            clearTimeout(moveDomItemTimer);
-          }}
-          role="presentation"
-        >
+        <ul className={styles.mainList}>
           {props.list
             .map((e, i) => {
               const listLength = props.list.length;

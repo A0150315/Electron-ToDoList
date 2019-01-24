@@ -30,7 +30,7 @@ class HomePage extends Component<Props> {
       ],
       editingItemIndex: -1,
       listTimer: null,
-      isMoving: false,
+      isMoving: false, // 添加按钮是否处于可移动状态
       mouseX: 0,
       mouseY: 0,
       top: 340,
@@ -108,6 +108,7 @@ class HomePage extends Component<Props> {
         deadline: '',
         isDone: false,
         progressOffset: 0,
+        isShowprogress: false, // 是否显示进度条
         key: btoa(prevState.list.length + new Date().getTime())
       })
     }));
@@ -207,6 +208,19 @@ class HomePage extends Component<Props> {
     const destPath = await outputImgCache(fileName, sourcePath);
     const { list } = this.state;
     list[index].img = destPath;
+    this.setState(
+      {
+        list
+      },
+      () => {
+        outputUserData(list);
+      }
+    );
+  };
+
+  setProgressBarStatus = bool => {
+    const { editingItemIndex, list } = this.state;
+    list[editingItemIndex].isShowprogress = bool;
     this.setState(
       {
         list
@@ -362,6 +376,7 @@ class HomePage extends Component<Props> {
                 deleteItem={this.deleteItem}
                 editingItemIndex={state.editingItemIndex}
                 returnDefault={this.returnDefault}
+                setProgressBarStatus={this.setProgressBarStatus}
               />
             )}
           />
