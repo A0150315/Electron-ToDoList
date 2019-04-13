@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import { Switch, Route } from 'react-router';
 
-import App from '../App';
+import App from '../App.tsx';
 import QRCodePage from './QRCodePage';
 
 import routes from './routes.json';

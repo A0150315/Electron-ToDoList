@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import styles from './Editor.css';
 
-type Props = {};
+interface Props {
+  [key: string]: any;
+}
 
 class Editor extends Component<Props> {
   constructor(props) {

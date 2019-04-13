@@ -81,12 +81,12 @@ export default class Timer {
     return this.cacheList;
   }
 
-  get length() {
-    return this.list.length;
-  }
-
   set list(list) {
     console.log('list:', list);
     this.cacheList = list;
+  }
+
+  get length() {
+    return this.list.length;
   }
 }

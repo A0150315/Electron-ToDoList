@@ -45,6 +45,13 @@ export default {
             cacheDirectory: true
           }
         }
+      },
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'ts-loader'
+        }
       }
     ]
   },

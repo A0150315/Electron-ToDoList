@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import styles from './AddBottom.css';
 
-type Props = {};
+interface Props {
+  [key: string]: any;
+}
 
 class AddBottom extends Component<Props> {
   render() {

@@ -31,6 +31,7 @@ const trayIconNative = nativeImage.createFromPath(
 );
 
 if (process.env.NODE_ENV === 'production') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
 }
@@ -46,6 +47,7 @@ if (
 }
 
 const installExtensions = async () => {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const installer = require('electron-devtools-installer');
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
   const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
@@ -54,6 +56,19 @@ const installExtensions = async () => {
     extensions.map(name => installer.default(installer[name], forceDownload))
   ).catch(console.log);
 };
+
+function openWechatPage() {
+  newwin = new BrowserWindow({
+    width: 600,
+    height: 600,
+    frame: true,
+    parent: mainWindow // win是主窗口
+  });
+  newwin.loadURL(`file://${__dirname}/test.html`); // new.html是新开窗口的渲染进程
+  newwin.on('closed', () => {
+    newwin = null;
+  });
+}
 
 /**
  * Add event listeners...
@@ -164,16 +179,3 @@ ipcMain.on('add', openWechatPage);
 ipcMain.on('closeWechat', () => {
   newwin.hide();
 });
-
-function openWechatPage() {
-  newwin = new BrowserWindow({
-    width: 600,
-    height: 600,
-    frame: true,
-    parent: mainWindow // win是主窗口
-  });
-  newwin.loadURL(`file://${__dirname}/test.html`); // new.html是新开窗口的渲染进程
-  newwin.on('closed', () => {
-    newwin = null;
-  });
-}

@@ -6,6 +6,15 @@ import { remote } from 'electron';
 const cacheFolderPath = remote.app.getPath('userData'); // 数据缓存文件夹
 const filename = 'data.json'; // 用户数据的文件名
 const userDateOutputFilename = path.join(cacheFolderPath, filename); // 用户数据文件所在路径
+
+function ErrHandler(err) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(userDateOutputFilename);
+  }
+}
+
 if (!fs.existsSync(userDateOutputFilename)) {
   fs.writeFile(userDateOutputFilename, '', err => {
     ErrHandler(err);
@@ -60,12 +69,4 @@ export function getUserData() {
       else resolve(data);
     });
   });
-}
-
-function ErrHandler(err) {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log(userDateOutputFilename);
-  }
 }

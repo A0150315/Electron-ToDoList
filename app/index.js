@@ -22,7 +22,8 @@ if (document.getElementById('root')) {
 
       if (module.hot) {
         module.hot.accept('./containers/Root', () => {
-          const NextRoot = require('./containers/Root'); // eslint-disable-line global-require
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          const NextRoot = require('./containers/Root');
           render(
             <AppContainer>
               <NextRoot store={store} history={history} />
@@ -51,7 +52,8 @@ if (document.getElementById('wechat')) {
 
       if (module.hot) {
         module.hot.accept('./containers/wechat/Root', () => {
-          const NextRoot = require('./containers/wechat/Root'); // eslint-disable-line global-require
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          const NextRoot = require('./containers/wechat/Root');
           render(
             <AppContainer>
               <NextRoot store={store} history={history} />
