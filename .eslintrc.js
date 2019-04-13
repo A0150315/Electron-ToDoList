@@ -73,7 +73,18 @@ module.exports = {
         extensions: ['.js', '.jsx', '.tsx', '.ts']
       }
     ],
-    'react/prefer-stateless-function': 'off'
+    'react/prefer-stateless-function': 'off',
+    'jsx-a11y/no-static-element-interactions': [0],
+    'jsx-a11y/click-events-have-key-events': [0],
+    '@typescript-eslint/indent': ['error', 2],
+    '@typescript-eslint/explicit-member-accessibility': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    'class-methods-use-this': ['error', { exceptMethods: ['render'] }],
+    'import/prefer-default-export': 'off',
+    'react/prop-types': 'off',
+    'no-else-return': 'off',
+    'jsx-quotes': ['error', 'prefer-double']
   },
   settings: {
     'import/resolver': {
