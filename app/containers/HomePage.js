@@ -103,7 +103,7 @@ function HomePage(props) {
       props.history.push('editor');
       setTimeout(() => {
         showEditorPageToggle();
-      }, 200);
+      }, 50);
     }
   };
 
