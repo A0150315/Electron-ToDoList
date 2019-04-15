@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -15,68 +15,41 @@ import * as viewbroadcastActions from '../actions/viewbroadcast';
 import routes from '../constants/routes.json';
 import EditorPage from './EditorPage';
 
-class HomePage extends Component<Props> {
-  props: Props;
+function HomePage(props) {
+  const [list, setList] = useState([]);
+  const [editingItemIndex, setEditingItemIndex] = useState(-1);
+  const [listTimer, setListTimer] = useState(null);
+  const [isMoving, setIsMoving] = useState(false);
+  const [mouseX, setMouseX] = useState(0);
+  const [mouseY, setMouseY] = useState(0);
+  const [top, setTop] = useState(340);
+  const [left, setLeft] = useState(190);
+  const [isAllowAddItem, setIsAllowAddItem] = useState(true);
+  const [isShowEditorPage, setIsShowEditorPage] = useState(false);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      list: [
-        // {
-        //   main:'车是事实是事实的事发生发射点反对 士大夫大师傅似的是是',
-        //   link:'www.baidu.com',
-        //   img:''
-        // }
-      ],
-      editingItemIndex: -1,
-      listTimer: null,
-      isMoving: false, // 添加按钮是否处于可移动状态
-      mouseX: 0,
-      mouseY: 0,
-      top: 340,
-      left: 190,
-      isAllowAddItem: true,
-      isShowEditorPage: false
-    };
-  }
-
-  async componentDidMount() {
-    let list = await getUserData(); // 下版本正式启用
+  const getList = async () => {
+    let list = await getUserData();
     list = list ? JSON.parse(list) : [];
-    this.setState(
-      {
-        list
-      },
-      () => {
-        // new Timer的时候已完成定时器初始化
-        // 待列表初始化完成后再初始化定时器
-        this.setState({ listTimer: new Timer(list, this) });
-      }
-    );
-  }
-
-  startMoving = $event => {
-    this.setState({
-      isMoving: true,
-      mouseX: $event.clientX - document.querySelector('#addBtn').offsetLeft,
-      mouseY: $event.clientY - document.querySelector('#addBtn').offsetTop
-    });
+    setList(list);
   };
 
-  endMoving = () => {
+  const startMoving = $event => {
+    setIsMoving(true);
+    setMouseX($event.clientX - document.querySelector('#addBtn').offsetLeft);
+    setMouseY($event.clientY - document.querySelector('#addBtn').offsetTop);
+  };
+
+  const endMoving = () => {
     setTimeout(() => {
-      this.setState({ isMoving: false, isAllowAddItem: true });
+      setIsMoving(false);
+      setIsAllowAddItem(true);
     });
   };
 
-  move = $event => {
-    const { state } = this;
-    if (state.isAllowAddItem)
-      this.setState({
-        isAllowAddItem: false
-      });
-    let cX = $event.clientX - state.mouseX;
-    let cY = $event.clientY - state.mouseY;
+  const move = $event => {
+    if (isAllowAddItem) setIsAllowAddItem(false);
+    let cX = $event.clientX - mouseX;
+    let cY = $event.clientY - mouseY;
     if (cY <= 47) {
       cY = 47;
     } else if (cY >= 360) {
@@ -87,21 +60,18 @@ class HomePage extends Component<Props> {
     } else if (cX >= 210) {
       cX = 210;
     }
-    this.setState({ left: cX, top: cY });
+    setLeft(cX);
+    setTop(cY);
   };
 
-  addItem = () => {
+  const addItem = () => {
     // 添加一个空项目，并使其处于编辑状态
-    const { state } = this;
-    if (
-      state.editingItemIndex !== -1 &&
-      !state.list[state.editingItemIndex].main
-    ) {
+    if (editingItemIndex !== -1 && !list[editingItemIndex].main) {
       return false;
     }
-    this.setState(prevState => ({
-      editingItemIndex: prevState.list.length,
-      list: prevState.list.concat({
+    setEditingItemIndex(list.length);
+    setList(
+      list.concat({
         main: '',
         link: '',
         img: '',
@@ -109,281 +79,248 @@ class HomePage extends Component<Props> {
         isDone: false,
         progressOffset: 0,
         isShowprogress: false, // 是否显示进度条
-        key: btoa(prevState.list.length + new Date().getTime())
+        key: btoa(list.length + new Date().getTime())
       })
-    }));
+    );
   };
 
-  editItem = (index, event) => {
-    // 使一个项目处于编辑状态
-    event.stopPropagation();
-    this.returnDefault(index);
+  const hideEditorPageToggle = () => {
+    setIsShowEditorPage(false);
   };
 
-  deleteItem = (index, key, event) => {
-    // 删除一个项目
-    const { state } = this;
-    if (event) event.stopPropagation();
-    let newEditingItemIndex = -1;
-    if (state.editingItemIndex !== -1) {
-      if (state.editingItemIndex > index) {
-        newEditingItemIndex = state.editingItemIndex - 1;
-      } else {
-        newEditingItemIndex = state.editingItemIndex;
-      }
+  const showEditorPageToggle = () => {
+    setIsShowEditorPage(true);
+  };
+
+  const hideEditorPage = () => {
+    if (props.location.pathname === '/editor') {
+      hideEditorPageToggle();
+      setTimeout(() => {
+        props.history.goBack();
+      }, 200);
     }
-    this.setState(
-      prevState => ({
-        editingItemIndex: newEditingItemIndex,
-        list: [
-          ...prevState.list.slice(0, index),
-          ...prevState.list.slice(index + 1, prevState.list.length)
-        ]
-      }),
-      () => {
-        const nextState = this.state;
-        // 删除 index 项目定时器
-        this.updateCache(nextState.list, key, 'delete');
-      }
-    );
-  };
-
-  highlightToggle = index => {
-    const { list } = this.state;
-    list[index].isDone = !list[index].isDone;
-    this.setState(
-      {
-        list
-      },
-      () => {
-        outputUserData(list);
-      }
-    );
-  };
-
-  handleChange = (event, type) => {
-    // 处理输入框改变动作
-    const { state } = this;
-    const { editingItemIndex } = state;
-    const list = [...state.list];
-    list[editingItemIndex][type] = event.target.value;
-    this.setState({ list });
-  };
-
-  handleTextAreaChange = event => {
-    this.handleChange(event, 'main');
-  };
-
-  handleInputChange = event => {
-    this.handleChange(event, 'link');
-  };
-
-  handleStartTimeChange = event => {
-    this.handleChange(event, 'startTime');
-  };
-
-  handleDeadlineChange = event => {
-    this.handleChange(event, 'deadline');
-  };
-
-  handleProgressChange = (index, event) => {
-    if (event.target.getAttribute('name') === 'progressbarContainer') {
-      const progressOffset = event.nativeEvent.offsetX;
-      const { list } = this.state;
-      list[index].progressOffset = progressOffset;
-      this.setState(
-        {
-          list
-        },
-        () => {
-          outputUserData(list);
-        }
-      );
+    if (props.location.pathname === '/' && editingItemIndex !== -1) {
+      props.history.push('editor');
+      setTimeout(() => {
+        showEditorPageToggle();
+      }, 200);
     }
   };
 
-  handdleImage = async (index, event) => {
-    const fileName = event.dataTransfer.files[0].name; // 文件名
-    const sourcePath = event.dataTransfer.files[0].path; // 原文件路径
-    const destPath = await outputImgCache(fileName, sourcePath);
-    const { list } = this.state;
-    list[index].img = destPath;
-    this.setState(
-      {
-        list
-      },
-      () => {
-        outputUserData(list);
-      }
-    );
+  // 更新本地缓存 定时器
+  const updateCache = (newList, key, type, timer = listTimer) => {
+    timer.list = newList;
+    timer[`${type}Timer`](key);
+    outputUserData(newList);
   };
 
-  setProgressBarStatus = bool => {
-    const { editingItemIndex, list } = this.state;
-    list[editingItemIndex].isShowprogress = bool;
-    this.setState(
-      {
-        list
-      },
-      () => {
-        outputUserData(list);
-      }
-    );
-  };
-
-  returnDefault = (index = -1) => {
+  const returnDefault = (index = -1) => {
     // 列表统一处理函数
-    const { state } = this;
     if (
       // textarea 无输入，删除
-      state.editingItemIndex !== -1 &&
-      !state.list[state.editingItemIndex].main
+      editingItemIndex !== -1 &&
+      !list[editingItemIndex].main
     ) {
-      const { key } = state.list[state.editingItemIndex];
+      const { key } = list[editingItemIndex];
       const isContinue: boolean = window.confirm('你确定不写点什么？');
       if (!isContinue) return;
-      this.hideEditorPage();
+      hideEditorPage();
       let newEditingItemIndex;
-      if (index >= state.editingItemIndex) {
+      if (index >= editingItemIndex) {
         newEditingItemIndex = index - 1;
       } else {
         newEditingItemIndex = index;
       }
       const newList = [
         // 整理后的列表
-        ...state.list.slice(0, state.editingItemIndex),
-        ...state.list.slice(state.editingItemIndex + 1, state.list.length)
+        ...list.slice(0, editingItemIndex),
+        ...list.slice(editingItemIndex + 1, list.length)
       ];
-      this.setState(
-        {
-          editingItemIndex: newEditingItemIndex,
-          list: newList
-        },
-        () => {
-          // 删除 editingItemIndex 项目的定时器
-          this.updateCache(newList, key, 'delete');
-        }
-      );
+      setEditingItemIndex(newEditingItemIndex);
+      setList(newList);
+      updateCache(newList, key, 'delete');
     } else {
-      this.setState({ editingItemIndex: index }, () => {
-        this.hideEditorPage();
-        // 每次点击后更新本地列表
-        if (state.editingItemIndex !== index && state.editingItemIndex !== -1) {
-          // 重置 editingItemIndex 项目的定时器
-          const { key } = state.list[state.editingItemIndex];
-          this.updateCache(state.list, key, 'update');
+      setEditingItemIndex(index);
+      // hideEditorPage();
+      // 每次点击后更新本地列表
+      if (editingItemIndex !== index && editingItemIndex !== -1) {
+        // 重置 editingItemIndex 项目的定时器
+        const { key } = list[editingItemIndex];
+        updateCache(list, key, 'update');
+      }
+    }
+  };
+
+  const editItem = (index, event) => {
+    // 使一个项目处于编辑状态
+    event.stopPropagation();
+    returnDefault(index);
+  };
+
+  const deleteItem = (index, key, event, ...rest) => {
+    // 删除一个项目
+    if (event) event.stopPropagation();
+    let newEditingItemIndex = -1;
+    if (editingItemIndex !== -1) {
+      if (editingItemIndex > index) {
+        newEditingItemIndex = editingItemIndex - 1;
+      } else {
+        newEditingItemIndex = editingItemIndex;
+      }
+    }
+
+    setEditingItemIndex(newEditingItemIndex);
+    setList([...list.slice(0, index), ...list.slice(index + 1, list.length)]);
+    // 删除 index 项目定时器
+    updateCache(
+      [...list.slice(0, index), ...list.slice(index + 1, list.length)],
+      key,
+      'delete',
+      ...rest
+    );
+  };
+
+  const highlightToggle = index => {
+    list[index].isDone = !list[index].isDone;
+    setList([...list]);
+    outputUserData(list);
+  };
+
+  const handleChange = (event, type) => {
+    // 处理输入框改变动作
+    list[editingItemIndex][type] = event.target.value;
+    setList([...list]);
+  };
+
+  const handleTextAreaChange = event => {
+    handleChange(event, 'main');
+  };
+
+  const handleInputChange = event => {
+    handleChange(event, 'link');
+  };
+
+  const handleStartTimeChange = event => {
+    handleChange(event, 'startTime');
+  };
+
+  const handleDeadlineChange = event => {
+    handleChange(event, 'deadline');
+  };
+
+  const handleProgressChange = (index, event) => {
+    if (event.target.getAttribute('name') === 'progressbarContainer') {
+      const progressOffset = event.nativeEvent.offsetX;
+      list[index].progressOffset = progressOffset;
+      setList([...list]);
+      outputUserData(list);
+    }
+  };
+
+  const handdleImage = async (index, event) => {
+    const fileName = event.dataTransfer.files[0].name; // 文件名
+    const sourcePath = event.dataTransfer.files[0].path; // 原文件路径
+    const destPath = await outputImgCache(fileName, sourcePath);
+    list[index].img = destPath;
+    setList([...list]);
+    outputUserData(list);
+  };
+
+  const setProgressBarStatus = bool => {
+    list[editingItemIndex].isShowprogress = bool;
+    setList([...list]);
+    outputUserData(list);
+  };
+
+  useEffect(() => {
+    getList();
+  }, []);
+
+  useEffect(() => {
+    // new Timer的时候已完成定时器初始化
+    // 待列表初始化完成后再初始化定时器
+
+    if (list.length > 0 && !listTimer) {
+      setListTimer(new Timer(list, { deleteItem }));
+    }
+  }, [list]);
+
+  useEffect(() => {
+    hideEditorPage();
+  }, [editingItemIndex]);
+
+  return (
+    <div
+      onClick={() => returnDefault()}
+      role="presentation"
+      style={{ width: '100%' }}
+      onMouseDown={proxy => {
+        if (proxy.target.getAttribute('name') === 'addBtn') {
+          proxy.stopPropagation();
+          proxy.preventDefault();
+          startMoving(proxy);
         }
-      });
-    }
-  };
-
-  // 更新本地缓存 定时器
-  updateCache = (newList, key, type) => {
-    const { state } = this;
-    state.listTimer.list = newList;
-    state.listTimer[`${type}Timer`](key);
-    outputUserData(newList);
-  };
-
-  showEditorPageToggle = () => {
-    this.setState({ isShowEditorPage: true });
-  };
-
-  hideEditorPageToggle = () => {
-    this.setState({ isShowEditorPage: false });
-  };
-
-  hideEditorPage = () => {
-    const { props, state } = this;
-    if (props.location.pathname === '/editor') {
-      this.hideEditorPageToggle();
-      setTimeout(() => {
-        props.history.goBack();
-      }, 200);
-    }
-    if (props.location.pathname === '/' && state.editingItemIndex !== -1) {
-      props.history.push('editor');
-      setTimeout(() => {
-        this.showEditorPageToggle();
-      }, 200);
-    }
-  };
-
-  render() {
-    const { state } = this;
-    return (
-      <div
-        onClick={() => this.returnDefault()}
-        role="presentation"
-        style={{ width: '100%' }}
-        onMouseDown={proxy => {
-          if (proxy.target.getAttribute('name') === 'addBtn') {
-            proxy.stopPropagation();
-            proxy.preventDefault();
-            this.startMoving(proxy);
-          }
-        }}
-        onMouseUp={proxy => {
+      }}
+      onMouseUp={proxy => {
+        proxy.preventDefault();
+        proxy.stopPropagation();
+        endMoving();
+      }}
+      onMouseMove={proxy => {
+        if (isMoving) {
           proxy.preventDefault();
           proxy.stopPropagation();
-          this.endMoving();
-        }}
-        onMouseMove={proxy => {
-          if (state.isMoving) {
-            proxy.preventDefault();
-            proxy.stopPropagation();
-            this.move(proxy);
-          }
-        }}
-      >
-        <Home
-          list={state.list}
-          handleInputChange={this.handleInputChange}
-          handleStartTimeChange={this.handleStartTimeChange}
-          handleDeadlineChange={this.handleDeadlineChange}
-          highlightToggle={this.highlightToggle}
-          handdleImage={this.handdleImage}
-          editItem={this.editItem}
-          handleTextAreaChange={this.handleTextAreaChange}
-          handleProgressChange={this.handleProgressChange}
-          deleteItem={this.deleteItem}
-          editingItemIndex={state.editingItemIndex}
-          returnDefault={this.returnDefault}
+          move(proxy);
+        }
+      }}
+    >
+      <Home
+        list={list}
+        handleInputChange={handleInputChange}
+        handleStartTimeChange={handleStartTimeChange}
+        handleDeadlineChange={handleDeadlineChange}
+        highlightToggle={highlightToggle}
+        handdleImage={handdleImage}
+        editItem={editItem}
+        handleTextAreaChange={handleTextAreaChange}
+        handleProgressChange={handleProgressChange}
+        deleteItem={deleteItem}
+        editingItemIndex={editingItemIndex}
+        returnDefault={returnDefault}
+      />
+      <AddBottom
+        addItem={addItem}
+        top={top}
+        left={left}
+        isAllowAddItem={isAllowAddItem}
+        editingItemIndex={editingItemIndex}
+      />
+      <Switch>
+        <Route
+          path={routes.EDITOR}
+          render={() => (
+            <EditorPage
+              list={list}
+              isShowEditorPage={isShowEditorPage}
+              showEditorPageToggle={showEditorPageToggle}
+              handleInputChange={handleInputChange}
+              handleStartTimeChange={handleStartTimeChange}
+              handleDeadlineChange={handleDeadlineChange}
+              highlightToggle={highlightToggle}
+              handdleImage={handdleImage}
+              editItem={editItem}
+              handleTextAreaChange={handleTextAreaChange}
+              handleProgressChange={handleProgressChange}
+              deleteItem={deleteItem}
+              editingItemIndex={editingItemIndex}
+              returnDefault={returnDefault}
+              setProgressBarStatus={setProgressBarStatus}
+            />
+          )}
         />
-        <AddBottom
-          addItem={this.addItem}
-          top={state.top}
-          left={state.left}
-          isAllowAddItem={state.isAllowAddItem}
-          editingItemIndex={state.editingItemIndex}
-        />
-        <Switch>
-          <Route
-            path={routes.EDITOR}
-            render={() => (
-              <EditorPage
-                list={state.list}
-                isShowEditorPage={state.isShowEditorPage}
-                showEditorPageToggle={this.showEditorPageToggle}
-                handleInputChange={this.handleInputChange}
-                handleStartTimeChange={this.handleStartTimeChange}
-                handleDeadlineChange={this.handleDeadlineChange}
-                highlightToggle={this.highlightToggle}
-                handdleImage={this.handdleImage}
-                editItem={this.editItem}
-                handleTextAreaChange={this.handleTextAreaChange}
-                handleProgressChange={this.handleProgressChange}
-                deleteItem={this.deleteItem}
-                editingItemIndex={state.editingItemIndex}
-                returnDefault={this.returnDefault}
-                setProgressBarStatus={this.setProgressBarStatus}
-              />
-            )}
-          />
-        </Switch>
-      </div>
-    );
-  }
+      </Switch>
+    </div>
+  );
 }
 
 function mapStateToProps(state) {

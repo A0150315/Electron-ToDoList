@@ -2,12 +2,13 @@ export default class Timer {
   constructor(list = [], ReactComponent) {
     this.actingComponent = ReactComponent;
     this.cacheList = list;
-    this.initTimer();
+    setTimeout(() => {
+      this.initTimer();
+    }, 1000);
     return this;
   }
 
   initTimer() {
-    console.log(this.list);
     this.list.forEach((e, index) => {
       if (e.deadline) this.startTimer(e.key, new Date(e.deadline), index);
     });
@@ -37,7 +38,8 @@ export default class Timer {
           this.cacheList[index].main
         }\n已过期，请问需要删除吗`
       );
-      if (isContinue) this.actingComponent.deleteItem(index, key);
+      console.log();
+      if (isContinue) this.actingComponent.deleteItem(index, key, null, this);
       return false;
     }
     const leftTimeLength = leftTime.toString().length;

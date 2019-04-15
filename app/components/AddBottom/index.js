@@ -19,7 +19,9 @@ class AddBottom extends Component<Props> {
           event.preventDefault();
           if (props.isAllowAddItem) {
             props.addItem();
-            props.history.push('editor');
+            {
+              /* props.history.push('editor'); */
+            }
           }
         }}
         style={
