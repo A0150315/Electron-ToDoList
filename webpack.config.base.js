@@ -45,6 +45,13 @@ export default {
             cacheDirectory: true
           }
         }
+      },
+      {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'ts-loader'
+        }
       }
     ]
   },
@@ -60,7 +67,8 @@ export default {
    */
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
-    modules: [path.join(__dirname, 'app'), 'node_modules']
+    modules: [path.join(__dirname, 'app'), 'node_modules'],
+    alias: { 'react-dom': '@hot-loader/react-dom' }
   },
 
   plugins: [

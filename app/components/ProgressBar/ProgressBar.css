@@ -2,11 +2,16 @@
   border-radius: 1px;
   margin-right: 23px;
   /* background: black; */
-  height: 10px;
+  height: 34px;
   display: flex;
   align-items: center;
-  position: relative;
+  position: absolute;
+  left: 0;
+  bottom: -17px;
   cursor: pointer;
+  width: 100%;
+  overflow: hidden;
+  /* box-shadow: 0 2px 10px 0 rgba(0,0,0,.5) */
 }
 
 .progressUnderBar {
@@ -16,10 +21,13 @@
 }
 
 .progressbarPoint {
-  background: #fee5e8;
-  height: 8px;
-  width: 8px;
+  /* background: #fee5e8; */
+  color: #fff;
+  height: 20px;
+  width: 20px;
   position: absolute;
-  top: 1px;
+  top: -1px;
   border-radius: 50%;
+  pointer-events: none;
+  transition: left 0.1s;
 }

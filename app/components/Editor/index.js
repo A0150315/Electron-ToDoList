@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import styles from './Editor.css';
 
-type Props = {};
+interface Props {
+  [key: string]: any;
+}
 
 class Editor extends Component<Props> {
   constructor(props) {
@@ -15,9 +17,6 @@ class Editor extends Component<Props> {
 
   componentDidMount() {
     const { props } = this;
-    setTimeout(() => {
-      props.showEditorPageToggle();
-    });
     let isShowprogressBar = false;
     if (props.list[props.editingItemIndex]) {
       isShowprogressBar = props.list[props.editingItemIndex].isShowprogress;

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import styles from './AddBottom.css';
 
-type Props = {};
+interface Props {
+  [key: string]: any;
+}
 
 class AddBottom extends Component<Props> {
   render() {
@@ -17,7 +19,9 @@ class AddBottom extends Component<Props> {
           event.preventDefault();
           if (props.isAllowAddItem) {
             props.addItem();
-            props.history.push('editor');
+            {
+              /* props.history.push('editor'); */
+            }
           }
         }}
         style={
