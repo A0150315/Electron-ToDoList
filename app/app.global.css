@@ -24,7 +24,7 @@
       opacity: .1;
   background-image: url(./img/bg.png);
   background-size:cover; */
-  /* filter: blur(1px) */
+  /* filter: blur(5px); */
 
   /* 透明 */
   background-color: #fee5e8;

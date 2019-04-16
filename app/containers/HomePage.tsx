@@ -78,7 +78,7 @@ function HomePage(props) {
         deadline: '',
         isDone: false,
         progressOffset: 0,
-        isShowprogress: false, // 是否显示进度条
+        isShowprogress: true, // 是否显示进度条
         key: btoa(list.length + new Date().getTime())
       })
     );
@@ -103,7 +103,7 @@ function HomePage(props) {
       props.history.push('editor');
       setTimeout(() => {
         showEditorPage();
-      }, 50);
+      }, 20);
     }
   };
 
