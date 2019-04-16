@@ -13,7 +13,7 @@ import {
 import * as viewbroadcastActions from '../actions/viewbroadcast';
 
 import routes from '../constants/routes.json';
-import EditorPage from './EditorPage';
+import EditorPage from './EditorPage.tsx';
 
 function HomePage(props) {
   const [list, setList] = useState([]);
