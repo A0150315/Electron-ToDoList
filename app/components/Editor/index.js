@@ -17,9 +17,6 @@ class Editor extends Component<Props> {
 
   componentDidMount() {
     const { props } = this;
-    // setTimeout(() => {
-    //   props.showEditorPageToggle();
-    // });
     let isShowprogressBar = false;
     if (props.list[props.editingItemIndex]) {
       isShowprogressBar = props.list[props.editingItemIndex].isShowprogress;

@@ -62,7 +62,10 @@ function openWechatPage() {
     width: 600,
     height: 600,
     frame: true,
-    parent: mainWindow // win是主窗口
+    parent: mainWindow, // win是主窗口
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
   newwin.loadURL(`file://${__dirname}/test.html`); // new.html是新开窗口的渲染进程
   newwin.on('closed', () => {
@@ -113,7 +116,10 @@ app.on('ready', async () => {
     icon: path.join(__dirname, '/ico.ico'),
     maximizable: false,
     minimizable: false,
-    transparent: true
+    transparent: true,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);

@@ -35,8 +35,8 @@ function HomePage(props) {
 
   const startMoving = $event => {
     setIsMoving(true);
-    setMouseX($event.clientX - document.querySelector('#addBtn').offsetLeft);
-    setMouseY($event.clientY - document.querySelector('#addBtn').offsetTop);
+    setMouseX($event.clientX - (document.querySelector('#addBtn') as HTMLElement).offsetLeft);
+    setMouseY($event.clientY - (document.querySelector('#addBtn')  as HTMLElement).offsetTop);
   };
 
   const endMoving = () => {
@@ -84,17 +84,17 @@ function HomePage(props) {
     );
   };
 
-  const hideEditorPageToggle = () => {
+  const hideEditorPage = () => {
     setIsShowEditorPage(false);
   };
 
-  const showEditorPageToggle = () => {
+  const showEditorPage = () => {
     setIsShowEditorPage(true);
   };
 
-  const hideEditorPage = () => {
+  const pageHandler = () => {
     if (props.location.pathname === '/editor') {
-      hideEditorPageToggle();
+      hideEditorPage();
       setTimeout(() => {
         props.history.goBack();
       }, 200);
@@ -102,7 +102,7 @@ function HomePage(props) {
     if (props.location.pathname === '/' && editingItemIndex !== -1) {
       props.history.push('editor');
       setTimeout(() => {
-        showEditorPageToggle();
+        showEditorPage();
       }, 50);
     }
   };
@@ -124,7 +124,6 @@ function HomePage(props) {
       const { key } = list[editingItemIndex];
       const isContinue: boolean = window.confirm('你确定不写点什么？');
       if (!isContinue) return;
-      hideEditorPage();
       let newEditingItemIndex;
       if (index >= editingItemIndex) {
         newEditingItemIndex = index - 1;
@@ -141,7 +140,6 @@ function HomePage(props) {
       updateCache(newList, key, 'delete');
     } else {
       setEditingItemIndex(index);
-      // hideEditorPage();
       // 每次点击后更新本地列表
       if (editingItemIndex !== index && editingItemIndex !== -1) {
         // 重置 editingItemIndex 项目的定时器
@@ -239,14 +237,13 @@ function HomePage(props) {
   useEffect(() => {
     // new Timer的时候已完成定时器初始化
     // 待列表初始化完成后再初始化定时器
-
     if (list.length > 0 && !listTimer) {
       setListTimer(new Timer(list, { deleteItem }));
     }
   }, [list]);
 
   useEffect(() => {
-    hideEditorPage();
+    pageHandler();
   }, [editingItemIndex]);
 
   return (
@@ -302,7 +299,6 @@ function HomePage(props) {
             <EditorPage
               list={list}
               isShowEditorPage={isShowEditorPage}
-              showEditorPageToggle={showEditorPageToggle}
               handleInputChange={handleInputChange}
               handleStartTimeChange={handleStartTimeChange}
               handleDeadlineChange={handleDeadlineChange}
