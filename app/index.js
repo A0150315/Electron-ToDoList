@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import { configureStore, history } from './store/configureStore';
 import './app.global.css';
+import './material.global.css';
 
 const store = configureStore();
 

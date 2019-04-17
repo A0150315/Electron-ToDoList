@@ -77,3 +77,8 @@ a:hover {
   width: 100%;
   position: fixed;
 }
+
+::selection {
+  background: #fee5e8;
+  color: #333;
+}

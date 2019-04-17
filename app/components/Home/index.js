@@ -38,6 +38,7 @@ class Home extends Component<Props> {
                     index={i}
                     {...props}
                     key={e.key}
+                    credit={e.key}
                   />
                 );
               }

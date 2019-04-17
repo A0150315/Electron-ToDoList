@@ -10,6 +10,24 @@
   transition: top 0.2s ease;
   border-radius: 5px;
   overflow: auto;
+  will-change: filter;
+}
+
+.page_blur {
+  animation: blur 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  filter: blur(10px);
+}
+
+@keyframes blur {
+  0% {
+    filter: blur(0px);
+  }
+  50% {
+    filter: blur(5px);
+  }
+  100% {
+    filter: blur(10px);
+  }
 }
 
 .titleBlock {
@@ -53,7 +71,7 @@
 .input {
   width: 100%;
   border: none;
-  display: block;
+  display: flex;
   border-bottom: 1px solid #fee5e8;
   background-color: transparent;
   color: #fff;
@@ -134,4 +152,33 @@ input[type]:focus,
   border-bottom: 1px solid #fff;
   border-left: 1px solid #fff;
   transform: rotate(-45deg);
+}
+
+.picker-toggle {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+}
+
+.date-selector {
+  flex: 1;
+  border: none;
+  display: block;
+  background-color: transparent;
+  color: #fff;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.date-selector:hover,
+.date-selector:focus {
+  box-shadow: none;
+  outline: 0 none;
+}
+
+.date-selector::-webkit-input-placeholder {
+  color: #ccc;
 }
