@@ -32,13 +32,17 @@ const ListItem = ({
 
   const formatDatetimeLocal = dateTimeLocalString => {
     const date = new Date(dateTimeLocalString);
+    const hours = '' + date.getHours();
+    const min = '' + date.getMinutes();
 
     return `${
       date.getFullYear() !== nowDays.getFullYear()
         ? date.getFullYear() + '年'
         : ''
-    }${date.getMonth() +
-      1}月${date.getDate()}日 ${date.getHours()}:${date.getMinutes()}`;
+    }${date.getMonth() + 1}月${date.getDate()}日 ${hours.padStart(
+      2,
+      '0'
+    )}:${min.padStart(2, '0')}`;
   };
 
   return (

@@ -218,6 +218,7 @@
     "axios": "^0.18.0",
     "devtron": "^1.4.0",
     "electron-debug": "^2.2.0",
+    "flatpickr": "^4.5.7",
     "history": "^4.9.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

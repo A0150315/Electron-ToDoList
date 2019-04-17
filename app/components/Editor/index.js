@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import Lollipop from '../icons/Lollipop.tsx';
 import Edit from '../icons/Edit.tsx';
 import Icecream from '../icons/Icecream.tsx';
+import Picker from '../Flatpickr';
 import styles from './Editor.css';
 
 interface Props {
@@ -21,6 +22,7 @@ const Editor = ({
   setProgressBarStatus
 }) => {
   const [isShowprogress, setIsShowprogress] = useState(false);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
 
   useEffect(() => {
     let isShowprogressBar = false;
@@ -34,7 +36,7 @@ const Editor = ({
     <div
       role="presentation"
       style={isShowEditorPage ? { top: 0 } : { top: '400px' }}
-      className={styles.page}
+      className={`${styles.page} ${isPickerOpen ? styles.page_blur : ''}`}
       onDrop={proxy => {
         handdleImage(editingItemIndex, proxy);
         proxy.stopPropagation();
@@ -86,13 +88,54 @@ const Editor = ({
                   type="datetime-local"
                   onClick={proxy => proxy.stopPropagation()}
                 /> */}
-            <input
+            {/* <input
               value={list[editingItemIndex].deadline}
               className={styles.input}
               onChange={handleDeadlineChange}
               type="datetime-local"
               onClick={proxy => proxy.stopPropagation()}
-            />
+            /> */}
+            <Picker
+              onClick={proxy => proxy.stopPropagation()}
+              options={{
+                enableTime: true,
+                wrap: true,
+                onOpen() {
+                  setIsPickerOpen(true);
+                },
+                onClose() {
+                  setIsPickerOpen(false);
+                },
+                onChange(selectedDates, str) {
+                  handleDeadlineChange({
+                    target: {
+                      value: str
+                    }
+                  });
+                }
+              }}
+            >
+              <div className={styles.input}>
+                <input
+                  type="text"
+                  placeholder="请选择结束时间"
+                  data-input
+                  defaultValue={list[editingItemIndex].deadline}
+                  className={styles['date-selector']}
+                />
+
+                <div
+                  className={styles['picker-toggle']}
+                  title="点击关闭"
+                  data-toggle
+                  style={{ display: isPickerOpen ? 'block' : 'none' }}
+                />
+
+                <a className={styles['picker-button']} title="清除" data-clear>
+                  &times;
+                </a>
+              </div>
+            </Picker>
             <div className={styles['checkbox-Block']}>
               <div
                 role="presentation"
