@@ -1,5 +1,5 @@
 {
-  "name": "To Do List",
+  "name": "todolist",
   "productName": "Chan List",
   "version": "1.0.3",
   "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
