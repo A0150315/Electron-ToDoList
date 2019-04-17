@@ -249,6 +249,7 @@ function HomePage(props) {
   return (
     <div
       onClick={() => returnDefault()}
+      
       role="presentation"
       style={{ width: '100%' }}
       onMouseDown={proxy => {
