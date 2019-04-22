@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 import Home from '../components/Home';
 import AddBottom from '../components/AddBottom';
 import Timer from '../utils/Timer';
 import {
-  outputUserData, // 输出用户数据文件
+  outputUserData, // 输出用户数据
   outputImgCache, // 输出图片缓存
-  getUserData // 获取用户数据
+  getUserData, // 获取用户数据
+  getUserDataFromNet, // 从firebase获取用户数据
+  outputLocalUserData, // 输出用户数据文件到本地
 } from '../utils/FileController';
 import * as viewbroadcastActions from '../actions/viewbroadcast';
 
@@ -26,11 +29,16 @@ function HomePage(props) {
   const [left, setLeft] = useState(190);
   const [isAllowAddItem, setIsAllowAddItem] = useState(true);
   const [isShowEditorPage, setIsShowEditorPage] = useState(false);
+  const [isOnline, setIsOnline] = useState(false);
 
   const getList = async () => {
-    let list = await getUserData();
-    list = list ? JSON.parse(list) : [];
+    let list = await getUserData()|| [];
     setList(list);
+
+    list = await getUserDataFromNet() || [];
+    setIsOnline(true)
+    setList(list);
+    outputLocalUserData(list)
   };
 
   const startMoving = $event => {
@@ -233,7 +241,7 @@ function HomePage(props) {
   useEffect(() => {
     getList();
   }, []);
-
+  
   useEffect(() => {
     // new Timer的时候已完成定时器初始化
     // 待列表初始化完成后再初始化定时器
@@ -273,6 +281,7 @@ function HomePage(props) {
       }}
     >
       <Home
+        isOnline={isOnline}
         list={list}
         handleInputChange={handleInputChange}
         handleStartTimeChange={handleStartTimeChange}

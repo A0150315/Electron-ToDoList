@@ -1,11 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 import { remote } from 'electron';
+import firebase from 'firebase/app';
+import 'firebase/database';
+
+// var database = firebase.database();
 
 // 用户数据文件初始化
 const cacheFolderPath = remote.app.getPath('userData'); // 数据缓存文件夹
 const filename = 'data.json'; // 用户数据的文件名
 const userDateOutputFilename = path.join(cacheFolderPath, filename); // 用户数据文件所在路径
+let isOnline = false;
 
 function ErrHandler(err) {
   if (err) {
@@ -32,10 +37,27 @@ if (!fs.existsSync(imgFolderPath)) {
  * @export Function
  * @param {Object} data
  */
-export function outputUserData(data) {
+export function outputLocalUserData(data) {
   fs.writeFileSync(userDateOutputFilename, JSON.stringify(data), err => {
     ErrHandler(err);
   });
+}
+
+/**
+ * 数据导出
+ * @export Function
+ * @param {Object} data
+ */
+export function outputUserData(data) {
+  // 设置firebase
+  if (isOnline) {
+    firebase
+      .database()
+      .ref('users/0')
+      .set(data);
+  }
+  // 设置本地
+  outputLocalUserData(data);
 }
 
 /**
@@ -66,7 +88,24 @@ export function getUserData() {
   return new Promise((resolve, reject) => {
     fs.readFile(userDateOutputFilename, 'utf8', (err, data) => {
       if (err) reject(err);
-      else resolve(data);
+      else resolve(JSON.parse(data));
     });
+  });
+}
+
+export function getUserDataFromNet() {
+  return new Promise((resolve, reject) => {
+    firebase
+      .database()
+      .ref('/users/0')
+      .once('value')
+      .then(function(snapshot) {
+        resolve(snapshot.val());
+        isOnline = true;
+        return snapshot.val();
+      })
+      .catch(err => {
+        reject(err);
+      });
   });
 }
