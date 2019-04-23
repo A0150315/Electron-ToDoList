@@ -12,6 +12,8 @@ import {
   getUserData, // 获取用户数据
   getUserDataFromNet, // 从firebase获取用户数据
   outputLocalUserData, // 输出用户数据文件到本地
+  netWorkStateHandler,
+  syncList
 } from '../utils/FileController';
 import * as viewbroadcastActions from '../actions/viewbroadcast';
 
@@ -32,13 +34,17 @@ function HomePage(props) {
   const [isOnline, setIsOnline] = useState(false);
 
   const getList = async () => {
-    let list = await getUserData()|| [];
-    setList(list);
+    const localList = await getUserData()|| [];
+    setList(localList);
 
-    list = await getUserDataFromNet() || [];
-    setIsOnline(true)
-    setList(list);
-    outputLocalUserData(list)
+    netWorkStateHandler(setIsOnline)
+    
+    const list = await getUserDataFromNet((list)=>{
+      setList(list || []);
+      outputLocalUserData(list || [])
+    })
+    
+    syncList(list || [],localList)
   };
 
   const startMoving = $event => {
@@ -87,7 +93,8 @@ function HomePage(props) {
         isDone: false,
         progressOffset: 0,
         isShowprogress: true, // 是否显示进度条
-        key: btoa(list.length + new Date().getTime())
+        key: btoa(list.length + new Date().getTime()),
+        gmtCreate:new Date().toISOString()
       })
     );
   };
@@ -119,7 +126,7 @@ function HomePage(props) {
   const updateCache = (newList, key, type, timer = listTimer) => {
     timer.list = newList;
     timer[`${type}Timer`](key);
-    outputUserData(newList);
+    outputUserData(newList,key,type);
   };
 
   const returnDefault = (index = -1) => {
@@ -152,6 +159,7 @@ function HomePage(props) {
       if (editingItemIndex !== index && editingItemIndex !== -1) {
         // 重置 editingItemIndex 项目的定时器
         const { key } = list[editingItemIndex];
+        list[editingItemIndex].gmtModified=new Date().toISOString()
         updateCache(list, key, 'update');
       }
     }

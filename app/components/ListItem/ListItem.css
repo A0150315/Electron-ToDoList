@@ -14,11 +14,12 @@
 .order {
   position: absolute;
   font-size: 2em;
-  left: 0px;
+  left: -0.3em;
   display: block;
   width: 40px;
   cursor: pointer;
   user-select: none;
+  text-align: center;
 }
 
 .order_active {
