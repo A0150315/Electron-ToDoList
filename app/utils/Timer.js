@@ -38,7 +38,6 @@ export default class Timer {
           this.cacheList[index].main
         }\n已过期，请问需要删除吗`
       );
-      console.log();
       if (isContinue) this.actingComponent.deleteItem(index, key, null, this);
       return false;
     }
@@ -84,7 +83,6 @@ export default class Timer {
   }
 
   set list(list) {
-    console.log('list:', list);
     this.cacheList = list;
   }
 

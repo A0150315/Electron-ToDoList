@@ -1,6 +1,7 @@
 import React from 'react';
 import { shell } from 'electron';
 
+import classNames from 'classnames';
 import styles from './ListItem.css';
 
 import ProgressBar from '../ProgressBar';
@@ -22,8 +23,15 @@ const ListItem = ({
   credit,
   isShowprogress,
   progressOffset,
-  handleProgressChange
+  handleProgressChange,
+  deletingIndex
 }) => {
+  const mainStyles = classNames(styles.mainBlock, {
+    [styles.mainBlockSlide2Right]:
+      index === deletingIndex && deletingIndex !== -1
+    // [styles.mainBlockSlide2Bottom]: index > deletingIndex && deletingIndex !== -1,
+    // [styles.mainBlockSlide2Top]: index < deletingIndex && deletingIndex !== -1
+  });
   const openBrowser = (linkString, proxy) => {
     proxy.stopPropagation();
     shell.openExternal(linkString);
@@ -47,7 +55,7 @@ const ListItem = ({
 
   return (
     <li
-      className={styles.mainBlock}
+      className={mainStyles}
       role="presentation"
       onDrop={proxy => {
         handdleImage(index, proxy);

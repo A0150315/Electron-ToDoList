@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import Home from '../components/Home';
+import Home from '../components/Home/index.tsx';
 import AddBottom from '../components/AddBottom';
 import Timer from '../utils/Timer';
 import {
@@ -34,23 +34,29 @@ function HomePage(props) {
   const [isOnline, setIsOnline] = useState(false);
 
   const getList = async () => {
-    const localList = await getUserData()|| [];
+    const localList = (await getUserData()) || [];
     setList(localList);
 
-    netWorkStateHandler(setIsOnline)
-    
-    const list = await getUserDataFromNet((list)=>{
+    netWorkStateHandler(setIsOnline);
+
+    const list = await getUserDataFromNet(list => {
       setList(list || []);
-      outputLocalUserData(list || [])
-    })
-    
-    syncList(list || [],localList)
+      outputLocalUserData(list || []);
+    });
+
+    syncList(list || [], localList);
   };
 
   const startMoving = $event => {
     setIsMoving(true);
-    setMouseX($event.clientX - (document.querySelector('#addBtn') as HTMLElement).offsetLeft);
-    setMouseY($event.clientY - (document.querySelector('#addBtn')  as HTMLElement).offsetTop);
+    setMouseX(
+      $event.clientX -
+        (document.querySelector('#addBtn') as HTMLElement).offsetLeft
+    );
+    setMouseY(
+      $event.clientY -
+        (document.querySelector('#addBtn') as HTMLElement).offsetTop
+    );
   };
 
   const endMoving = () => {
@@ -94,7 +100,7 @@ function HomePage(props) {
         progressOffset: 0,
         isShowprogress: true, // 是否显示进度条
         key: btoa(list.length + new Date().getTime()),
-        gmtCreate:new Date().toISOString()
+        gmtCreate: new Date().toISOString()
       })
     );
   };
@@ -126,7 +132,7 @@ function HomePage(props) {
   const updateCache = (newList, key, type, timer = listTimer) => {
     timer.list = newList;
     timer[`${type}Timer`](key);
-    outputUserData(newList,key,type);
+    outputUserData(newList, key, type);
   };
 
   const returnDefault = (index = -1) => {
@@ -159,7 +165,7 @@ function HomePage(props) {
       if (editingItemIndex !== index && editingItemIndex !== -1) {
         // 重置 editingItemIndex 项目的定时器
         const { key } = list[editingItemIndex];
-        list[editingItemIndex].gmtModified=new Date().toISOString()
+        list[editingItemIndex].gmtModified = new Date().toISOString();
         updateCache(list, key, 'update');
       }
     }
@@ -182,9 +188,10 @@ function HomePage(props) {
         newEditingItemIndex = editingItemIndex;
       }
     }
-
     setEditingItemIndex(newEditingItemIndex);
-    setList([...list.slice(0, index), ...list.slice(index + 1, list.length)]);
+    setTimeout(() => {
+      setList([...list.slice(0, index), ...list.slice(index + 1, list.length)]);
+    }, 250);
     // 删除 index 项目定时器
     updateCache(
       [...list.slice(0, index), ...list.slice(index + 1, list.length)],
@@ -249,7 +256,7 @@ function HomePage(props) {
   useEffect(() => {
     getList();
   }, []);
-  
+
   useEffect(() => {
     // new Timer的时候已完成定时器初始化
     // 待列表初始化完成后再初始化定时器
@@ -265,7 +272,6 @@ function HomePage(props) {
   return (
     <div
       onClick={() => returnDefault()}
-      
       role="presentation"
       style={{ width: '100%' }}
       onMouseDown={proxy => {

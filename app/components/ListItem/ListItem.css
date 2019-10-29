@@ -1,15 +1,34 @@
 .mainBlock {
   position: relative;
   padding-left: 40px;
-  min-height: 42px;
+  min-height: 72px;
   margin-bottom: 10px;
   padding: 10px 5px 20px 40px;
+  box-sizing: border-box;
   border-bottom: 1px solid;
+  transition: all 0.2s ease-in;
+  transform: translateX(0);
+  overflow: hidden;
+  opacity: 1;
 }
 
-.mainBlock:first-of-type {
-  margin-top: 10px;
+.mainBlockSlide2Right {
+  transform: translateX(100%);
+  min-height: 0;
+  max-height: 0;
+  margin-bottom: 0;
+  padding: 0;
+  border-bottom: none;
+  opacity: 0;
 }
+
+/* .mainBlockSlide2Bottom {
+  transform: translateY(100%);
+}
+
+.mainBlockSlide2Top {
+  transform: translateY(calc(-100% - 10px));
+} */
 
 .order {
   position: absolute;
